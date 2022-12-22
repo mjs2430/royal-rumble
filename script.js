@@ -1,14 +1,47 @@
 $(document).ready(function() {
-	
+
+
+/////***** Get data from Google Sheets *****////
+    
+ // Replace YOUR_API_KEY with your actual API key
+const API_KEY = 'AIzaSyC-9cY7xA-_BsMvRieTFsO4thZp6jkkIKU';
+
+  // Replace SPREADSHEET_ID with the ID of the spreadsheet you want to import
+const SPREADSHEET_ID = '1NFjwvQqcK5Aa4NgC37nRg3Tp9TXdzy4tz03RwY_cuMQ';
+
+//******* Define a function to retrieve data from a specific sheet. sheetName is an argument to be passed in later when calling this function. I use it to call in the year and the range (columns or rows) ***///
+// Define a function to retrieve data from a specific sheet
+const getSheetData = async (sheetName,range) => {
+  // Build the API request URL to get the data from the sheet, skipping the first row
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${sheetName}!${range}?key=${API_KEY}`;
+
+  // Make the API request to get the data from the sheet
+  const response = await fetch(url);
+  const data = await response.json();
+
+  // data.values is an array of rows, where each row is an array of cells
+  return data.values;
+    
+};
+
+
+
+
+
+
+    
+     
+     
+//setup variables   
 let wrestlersPerPlayer;
 let numberOfPlayers;
 let playerNames; 
 let wrestlerNames;
 let wrestlerName;
 let extra = [];
-let value;
 let count = -1;
-
+let names = [];
+let order = [];
     
 
 //Get player names from input field, split into an array
@@ -48,19 +81,37 @@ wrestlersPerPlayer = parseInt(wrestlers); //convert value string to integer
 
 //get array of wrestlers by picking a year in the dropdown
 $("#year").change(function () { 
-value = $('#year').val(); // get value of drodown
 let showYear = $('#year option:selected').text();
-SHUFFLE(year[value]); //run shuffle function, which includes function to create multidimensional array
-CREATE_WRESTLER_GRID(); // run function that puts wrestlers in DOM   
-    $("#wrestler-assignment").removeClass("show").addClass("hidden");
-	$(".player-grid").removeClass("hidden").addClass("show");
-	 $("header").addClass("slideUp");
-	 $("#in-the-ring").removeClass("hidden").addClass("show");
-	//$(".new-button").removeClass("hidden").addClass("show");
-	$("#show-year").append(`<h3>${showYear}</h3>`);
-	       setTimeout(function(){ $("#show-year").removeClass("hidden").addClass("show") }, 1000);
 
-    }); //end
+// Call the google sheets function and pass in the selected year as the sheet name to get
+getSheetData(showYear,"A2:E40").then(rows => {
+  // Loop through the rows in the sheet
+  for (const row of rows) {
+    // Add the wrestler's name from the row to the names array
+    names.push(row[1]);
+    order.push(row[1]);
+  }
+});
+
+// Use the name values from the sheet
+console.log(names);
+setTimeout(function () {
+    SHUFFLE(names); //run shuffle function, which includes function to create multidimensional array
+    CREATE_WRESTLER_GRID(); // run function that puts wrestlers in DOM   
+    $("#wrestler-assignment").removeClass("show").addClass("hidden");
+    $(".player-grid").removeClass("hidden").addClass("show");
+    $("header").addClass("slideUp");
+    $("#in-the-ring").removeClass("hidden").addClass("show");
+    //$(".new-button").removeClass("hidden").addClass("show");
+    $("#show-year").append(`<h3>${showYear}</h3>`);
+    setTimeout(function () {
+        $("#show-year").removeClass("hidden").addClass("show")
+    }, 1000);
+    return showYear;
+
+}, 500);
+
+}); //end
     
 
 
@@ -104,9 +155,10 @@ extra.shift();
 	
 //mark wrestlers as entered when click "add new" button
 $('#in-the-ring').on('click', '#next-wrestler', function() { 
-	playAudio("http://matthewsasso.com/royalrumble/sounds/crowd.wav");
+    console.log(order);
+playAudio("http://matthewsasso.com/royalrumble/sounds/crowd.wav");
 count++; //add to the count so we can use that integer to reference a position in the wrestler array
-let wrestler = year[value][count]; // year object, wrestler name, array position
+let wrestler = order[count]; // wrestler name, array position
 let wrestlerClass = wrestler.replace(/^[^A-Z]+|[\W]+/ig, "") //remove spaces and special chars
  $("#in-the-ring").append(`<span class="${wrestlerClass} pill">${wrestler}</span>`);//add the wrestler to the top bar
 	
@@ -250,7 +302,10 @@ const CREATE_WRESTLER_GRID = () => {
     
 }//end
 	
+ 
 
+
+/*
 let year = {
 	eightEight: ["Tito Santana", "Bret Hart", "Butch Reed", "Jim Niedhart", "Jake Roberts", "Harley Race", "jim Brunzell", "Sam Houston", "Danny Davis", "Boris Zhukov", "Don Muraco", "Nikolai Volkoff", "Jim Duggan", "Ron Bass", "B. Brian Blair", "Hillybilly Jim", "Dino Bravo", "Ultimate Warrior", "One Man Gang", "Junkyard Dog"],
 	eightNine: ["Demolition Axe", "Demolition Smash", "Andre the Giant", "Mr. Perfect", "Ronnie Garvin", "Greg Valentine", "Jake Roberts", "Ron Bass", "Shawn Michaels", "Butch Miller", "Honkytonk Man", "Tito Santana", "Bad News Brown", "Marty Jannetty", "Randy Savage", "Arn Anderson", "Tully Blanchard", "Hulk Hogan", "Luke Williams", "Koko B. Ware", "The Warlord", "Big Bossman", "Akeem", "Brutus Beefcake", "Red Rooster", "The Barbarian", "John Studd", "Hercules", "Rick Martel", "Ted DiBiase"],
@@ -265,7 +320,7 @@ let year = {
 	nineEight: ["Cactus Jack", "Chainsaw Charlie", "Tom Brandi", "Rocky Maivia", "Headbanger Mosh", "Phinneas Godwinn", "DOA 8-Ball", "Blackjack Bradshaw", "Owen Hart", "Steve Blackman", "D-Lo Brown", "Kurrgan", "Marc Mero", "Ken Shamrock", "Headbanger Thrasher", "Mankind", "Goldust", "Jeff Jarrett", "Honkytonk Man", "Ahmed Johnson", "Mark Henry", "DOA Skull", "Kama Mustafa", "Steve Austin", "Henry Goodwinn", "Savio Vega", "Farooq", "Dude Love", "DOA Chainz", "Vader"],
 	nineNine: ["Steve Austin", "Vince McMahon", "Golga", "Darren Drosdov", "Edge", "Gillburg", "Steve Blackman", "Dan Severn", "Tiger Ali Singh", "Blue Meanie", "Mabel", "Jesse James", "Gangrel", "Kurrgan", "Al Snow", "Goldust", "The Godfather", "Kane", "Ken Shamrock", "Billy Gunn", "Test", "Big Bossman", "Hunter Hearst Helmsley", "Val Venis", "X-Pac", "Mark Henry", "Jeff Jarrett", "D-Lo Brown", "Owen Hart", "Chyna"],
   ohOh: ["D'lo Brown", "Grand Master Sexay", "Mosh" , "Christian", "Rikishi", "Scotty 2 Hotty", "Steve Blackman", "Viscera", "Big Boss Man", "Test", "The British Bulldog", "Gangrel", "Edge", "Bob Backlund", "Chris Jericho", "Crash Holly", "Chyna", "Faarooq", "Road Dogg", "Al Snow", "Val Venis", "Prince Albert", "Hardcore Holly", "The Rock", "Billy Gunn", "Big Show", "Bradshaw", "Kane", "The Godfather", "X-Pac"],
-	ohOne: ["Jeff Hardy", "Bull Buchanan", "Matt Hardy", "Farooq", "Drew Carey", "Kane", "Raven", "Al Snow", "Perry Saturn", "Steve Blackman", "Grand Master Sexay", "Honkytonk Man", "The Rock", "The Godfather", "Tazz", "Bradshaw", "Prince Albert", "Hardcore Holly", "K-Kwik", "Val Venis", "William Regal", "Test", "Big Show", "Crash Holly", "The Undertake", "Scotty Too Hotty", "Steve Austin", "Billy Gunn", "Haku", "Rikishi"],
+	ohOne: ["Jeff Hardy", "Bull Buchanan", "Matt Hardy", "Farooq", "Drew Carey", "Kane", "Raven", "Al Snow", "Perry Saturn", "Steve Blackman", "Grand Master Sexay", "Honkytonk Man", "The Rock", "The Godfather", "Tazz", "Bradshaw", "Prince Albert", "Hardcore Holly", "K-Kwik", "Val Venis", "William Regal", "Test", "Big Show", "Crash Holly", "The Undertaker", "Scotty Too Hotty", "Steve Austin", "Billy Gunn", "Haku", "Rikishi"],
 	ohTwo: ["Rikishi", "Goldust", "Big Bossman", "Bradshaw", "Lance Storm", "Al Snow", "Billy Gunn", "The Undertaker", "Matt Hardy", "Jeffy Hardy", "Maven", "Scotty Too Hotty", "Christian", "Diamond Dallas Page", "Chuck Palumbo", "The Godfather", "Albert", "Perry Saturn", "Steve Austin", "Val Venis", "Test", "Triple H", "Hurricane", "Farooq", "Mr. Perfect", "Kurt Angle", "The Big Show", "Kane", "Rob Van Dam", "Booker T"],
 	ohThree: ["Shawn Michaels", "Chris Jericho", "Christopher Nowinski", "Rey Mysterio", "Edge", "Christian", "Chavo Guerrero", "Yoshihiro Tajiri", "Bill DeMott", "Tommy Dreamer", "Bull Buchanan", "Rob Van Dam", "Matt Hardy", "Eddie Guerrero", "Jeff Hardy", "Rosey", "Test", "John Cena", "Charlie Haas", "Rikishi", "Jamal", "Kane", "Shelton Benjamin", "Booker T", "A-Train", "Maven", "Goldust", "Dave Batista", "Brock Lesnar", "The Undertaker"],
 	ohFour: ["Chris Benoit", "Randy Orton", "Mark Henry", "Yoshihiro Tajiri", "Bradshaw", "Rhyno", "Matt Hardy", "Scott Steiner", "Matt Morgan", "Hurricane", "Booker T", "Kane", "Spike Tudley", "Rikishi", "Rene Dupre", "A-Train", "Shelton Benjamin", "Ernest Miller", "Kurt Angle", "Rico", "Mick Foley", "Christian", "Nunzio", "The Big Show", "Chris Jericho", "Charlie Haas", "Billy Gunn", "John Cena", "Rob Van Dam", "Bill Goldberg"],
@@ -276,8 +331,7 @@ let year = {
 	ohNine: ["Rey Mysterio", "John Morrison", "Carlito Colon", "MVP", "The Great Khali", "Vladimir Kozlov", "Triple H", "Randy Orton", "JTG", "Ted DiBiase, Jr.", "Chris Jericho", "Mike Knox", "The Miz", "Fit Finlay", "Cody Rhodes", "The Undertaker", "Goldust", "CM Punk", "Mark Henry", "Shelton Benjamin", "William Regal", "Kofi Kingston", "Kane", "R-Truth", "Rob Van Dam", "Brian Kendrick", "Dolph Zigglar", "Santino Marella", "Jim Duggan", "The Big Show"],
 	ohTen: ["Dolph Ziggler", "Evan Bourne", "CM Punk", "JTG", "The Great Khali", "Beth Phoenix", "Zack Ryder", "Triple H", "Drew McIntyre", "Ted Dibiase, Jr.", "John Morrison", "Kane", "Cody Rhodes", "MVP", "Carlito", "The Miz", "Matt Hardy", "Shawn Michaels", "John Cena", "Shelton Benjamin", "Yoshi Tatsu", "The Big Show", "Mark Henry", "Chris Masters", "R-Truth", "Jack Swagger", "Kofi Kingston", "Chris Jericho", "Edge", "Batista"],
     seventeen: ["Big Cass", "Chris Jericho", "Kalisto" , "Mojo Rawley" , "Jack Gallagher" , "Mark Henry" , "Braun Strowman" , "Sami Zayn" , "Big Show" , "Tye Dillinger" , "James Ellsworth" , "Dean Ambrose" , "Baron Corbin" , "Kofi Kingston" , "The Miz" , "Sheamus" , "Big E" , "Rusev",  "Cesaro" , "Xavier Woods" , "Bray Wyatt" , "Apollo Crews" , "Randy Orton" , "Dolph Ziggler", "Luke Harper" , "Brock Lesnar" , "Enzo Amore" , "Goldberg" , "The Undertaker" , "Roman Reigns"]
-};
-	
+}; */
 	
 	
 	});
