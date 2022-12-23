@@ -299,7 +299,7 @@ cursor: pointer;
 }
 .dead button {
   cursor: pointer;
-  background: red;
+  background: #aa2e2e;
   transition: all 1s;
   text-decoration: line-through;
 cursor: pointer;
@@ -308,22 +308,29 @@ cursor: pointer;
   content: "dead";
 }
 .dead p {
-  background: red;
+  background: #aa2e2e;
   border: none;
   transition: all 1s;
   text-decoration: line-through;
 cursor: pointer;
+    color: #fff;
 }
 .slideUp {
   position: relative;
   transition: all 2s;
   margin-top: -330px;
 }
+
+.playing {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
 .player-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
   text-align: center;
-  padding: 80px 20px;
+}
+
+video {
+    width: 100%;
 }
 .player-section {
   margin: 0px 10px 20px;
@@ -332,14 +339,22 @@ cursor: pointer;
   box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.2);
 }
 
+.player-section h2{
+    margin: 5px 0;
+}
+
+.list-of-wrestlers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
 .fullscreen {
   top: 0;
-  padding: 50px;
+  padding: 0px 20px;
   display: flex;
-flex-direction: column;
-    z-index: 9999;
-  opacity: 0;
-  justify-content: center;
+  flex-direction: column;
+   z-index: 9999;
+  justify-content: flex-start;
   align-items: center;
   transition: all 1s;
   width: 100vw;
@@ -347,44 +362,49 @@ flex-direction: column;
   max-width: 100%;
   max-height: 100%;
   position: absolute;
-  background: #222;
-  color: #fff;
-  font-size: 30px;
-
+  background: transparent;
+ pointer-events: none;
 }
 
-.fullscreen.red {
-    background: red;
+
+.notification {
+    padding: 0px 30px;
+    margin-bottom: 10px;
+    background: #01794d;
+    color: #fff;
+    opacity: 0;
+    border: 1px solid #01794d;
+    border-radius: 10px;
+    box-shadow: 5px 5px 20px #333;
 }
 
-.fullscreen h2 {
-        text-align: center;
-        display: block;
-        margin: 0;
-        font-size: 80px;
-    }
+.notification.red {
+    background: #aa2e2e;
+    border: 1px solid #aa2e2e;
+}
 
-.fullscreen h3 {
+.notification h3 {
         text-align: center;
         display: block;
         font-size: 20px;
-        margin: 20px 0 0 0;
-        text-transform: uppercase;
         letter-spacing: 1px;
     }
+
+.notification h3 span {
+    font-family: 'Lacquer', sans-serif;
+    font-size: 24px;
+}
 
 .reveal {
   opacity: 1;
   z-index: 9999;
   transition: all 1s;
-  position: fixed;
   text-align: center;
 }
 
 .fade {
 	opacity: 0;
 	transition: all 700ms;
-	position: fixed;
 }
 
 .hide {
@@ -395,18 +415,6 @@ flex-direction: column;
 }
 
 
-
-.userName {
-    text-transform: capitalize;
-    display: block;
-    margin: 100px 0 0 0 ;
-    text-align: center;
-}
-
-.userName span {
-        font-family: 'Lacquer', sans-serif;
-        font-size: 40px;
-}
 
 .addExtra {
     width: calc(100% - 40px);

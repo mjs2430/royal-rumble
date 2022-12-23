@@ -15,7 +15,6 @@
   <title>Royal Rumble Game Generator - Matthew Sasso</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 <link rel="stylesheet" href="./style.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 
 </head>
 <body>
@@ -81,15 +80,19 @@
 			</select> 
         
 	</section>   
-
-	<section class="player-grid hidden">
-        <video src="video.mp4" controls></video>
-	</section> 
-  
+    
+    <section class="playing hidden">
+        <video controls></video>
+	   <section class="player-grid"></section> 
+    </section>
+    
+    <div class="fullscreen"><div class="notification noti-${wrestlerClass}"><h3>Now entering the ring, <span>${wrestler}!</span></h3><h3 class="userName">Start drinking: <span>${names}</span></h3></div></div>
 </main>
 <!-- partial -->
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/react/16.12.0/umd/react.production.min.js'></script>
+<!-- Include the Noty library -->
+<script src="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta/lib/noty.min.js"></script>
 <script  src="./script.js"></script>
 
 </body>

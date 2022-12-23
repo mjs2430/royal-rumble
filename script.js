@@ -18,18 +18,13 @@ const getSheetData = async (sheetName,range) => {
   // Make the API request to get the data from the sheet
   const response = await fetch(url);
   const data = await response.json();
-
+    
   // data.values is an array of rows, where each row is an array of cells
   return data.values;
     
 };
 
 
-
-
-
-
-    
      
      
 //setup variables   
@@ -42,10 +37,15 @@ let extra = [];
 let count = -1;
 let names = [];
 let order = [];
+let entryTimes = [];
 let exitTimes = [];
 let timeInRing = [];
 let showYear = 0; 
+let deadCount = 0;
+let addWrestlerRunning = false;
+let removeWrestlerRunning = false;
 
+    
 //Get player names from input field, split into an array
   $('#players').keyup(function() {
   let string =  $('#players').val();
@@ -93,18 +93,28 @@ getSheetData(showYear,"A2:E40").then(rows => {
     names.push(row[1]);
     order.push(row[1]);
     timeInRing.push(row[4])
-  }
-});
+  } 
+    
+// Define the video element and the video source
+const video = document.querySelector('video');
+const src = showYear + '.mp4';
+console.log(src);
+// Set the src attribute of the video element
+video.setAttribute('src', src);
+
+    
+}) 
+    
+
 
 // Use the name values from the sheet
 setTimeout(function () {
     SHUFFLE(names); //run shuffle function, which includes function to create multidimensional array
     CREATE_WRESTLER_GRID(); // run function that puts wrestlers in DOM   
     $("#wrestler-assignment").removeClass("show").addClass("hidden");
-    $(".player-grid").removeClass("hidden").addClass("show");
+    $(".playing").removeClass("hidden").addClass("show");
     $("header").addClass("slideUp");
     $("#in-the-ring").removeClass("hidden").addClass("show");
-    //$(".new-button").removeClass("hidden").addClass("show");
     $("#show-year").append(`<h3>${showYear}</h3>`);
     setTimeout(function () {
         $("#show-year").removeClass("hidden").addClass("show")
@@ -145,12 +155,13 @@ extra.shift();
 	
     
 	
-//mark wrestlers as entered when click "add new" button
+//**************** mark wrestlers as entered when click "add new" button ********/
 $('#in-the-ring').on('click', '#next-wrestler', function() { 
-    
+  
 let video = document.querySelector('video');// Get the video element
 let timestamp = Math.round(video.currentTime);// Get the current timestamp of the video
-    
+entryTimes.push(timestamp); // add the entryTime to the entryTimes array
+
 playAudio("http://matthewsasso.com/royalrumble/sounds/crowd.wav");
 count++; //add to the count so we can use that integer to reference a position in the wrestler array
    
@@ -176,13 +187,98 @@ let wrestlerClass = wrestler.replace(/^[^A-Z]+|[\W]+/ig, "") //remove spaces and
     names = names.toString();
     names = names.replace(/,/g, ', ');
     
-    let fullscreen = `<div class="fullscreen"><h3>Now entering the ring</h3><h2 class="${wrestlerClass}">${wrestler}!</h2><p class="userName">Start drinking: <span>${names}</span></p></div>`;//create a variable that is a fullscreen overlay
-     $(fullscreen).appendTo('main'); //append it to main area of html
-	setTimeout(function(){ $(".fullscreen").addClass("reveal") }, 100); //after 100ms, fade in
-	 $(".inactive." + wrestlerClass).addClass("active");//change wrestler in grid to active colors
-  setTimeout(function(){ $(".fullscreen").removeClass("reveal").addClass("fade") }, 4000);
-	setTimeout(function(){ $(".fullscreen").removeClass("fade").addClass("hide") }, 5000);//after 4 seconds, hide overlay
+ $(".inactive." + wrestlerClass).addClass("active");//change wrestler in grid to active colors
+
+     
+let notification = `<div class="notification noti-${wrestlerClass}"><h3>Now entering the ring, <span>${wrestler}!</span></h3><h3 class="userName">Start drinking: <span>${names}</span></h3></div>`;//create a variable that is a fullscreen overlay
+     $(notification).appendTo('.fullscreen'); //append it to main area of html
+	setTimeout(function(){ 
+        $(".noti-" + wrestlerClass).addClass("reveal");
+        //addWrestlerRunning = true; // lets us know this function is running so other functions won't run  
+    }, 100); //after 100ms, fade in
+    
+  setTimeout(function(){ 
+      $(".noti-" + wrestlerClass).removeClass("reveal").addClass("fade");
+        }, 4000);
+	setTimeout(function(){ 
+        $(".noti-" + wrestlerClass).removeClass("fade").addClass("hide");      
+        //addWrestlerRunning = false; //sets the value to false so other functions will be allowed to run 
+ }, 5000);//after 4 seconds, hide overlay 
+    
 });   //end	 
+    
+    
+    
+    
+/******* Listen for timestamp of video, find match in exitTimes, do things if matched. ***/
+    
+   // Get the video element
+var video = document.querySelector('video');
+    
+// Set up an interval to call the getTime function every 1000 milliseconds (1 second)
+setInterval(getTime, 1000);
+
+function getTime() {
+  // Check if the video is playing
+  if (video.paused) {
+    return;
+  }
+
+  // Get the current time of the video
+  var videoTimestamp = Math.round(video.currentTime);
+
+//Define the array we want to search as the exitTimes array    
+const array = exitTimes;
+        
+//Search the exitTimes array for a match to the videoTimestamp
+const found = array.find(number => number === videoTimestamp);
+
+//Remove wrestler if found
+if (found) {
+    
+    deadCount++ //count each time a wrestler exits so we can do stuff when all wrestlers are out
+    var index = array.indexOf(found);  // Get the index of the closest number in the array
+	wrestlerName = order[index];  //gets the wrestler name
+	let wrestlerClass = wrestlerName.replace(/^[^A-Z]+|[\W]+/ig, "") //sets the wrestler class we are going to search for based on the name
+    console.log(wrestlerClass);
+    let nl = document.querySelectorAll(".list-of-wrestlers > ." + wrestlerClass); // select the wrestler card from the list based on their CSS class
+    let arr = [];
+    let names = [];
+    for(let i = nl.length; i--; arr.unshift(nl[i])); // convert nodelist to array
+    for (let x in arr) {
+    let userName = $(arr[x]).parent().parent().find("h2").html(); // get player name who has this wrestler
+    names.push(userName); 
+    }  
+    
+    names = names.toString();
+    names = names.replace(/,/g, ', ');
+    
+    if (deadCount == 30) {
+     console.log("entry times " + entryTimes);
+     console.log("exit times " + exitTimes);
+    }     
+    
+$(".list-of-wrestlers ." + wrestlerClass).removeClass("active").addClass("dead");
+    
+//Show wrestler is dead notification    
+    let notification = `<div class="notification red noti-${wrestlerClass}"><h3><span>${wrestlerName}!</span> is dead!</h3><h3 class="userName">Finish drinking: <span>${names}</span></h3></div>`;//create a variable that is a fullscreen overlay
+     $(notification).appendTo('.fullscreen'); //append it to main area of html
+	setTimeout(function(){ 
+        $(".noti-" + wrestlerClass).addClass("reveal");
+        //addWrestlerRunning = true; // lets us know this function is running so other functions won't run  
+    }, 100); //after 100ms, fade in
+    
+  setTimeout(function(){ 
+      $(".noti-" + wrestlerClass).removeClass("reveal").addClass("fade");
+        }, 4000);
+	setTimeout(function(){ 
+        $(".noti-" + wrestlerClass).removeClass("fade").addClass("hide");      
+        //addWrestlerRunning = false; //sets the value to false so other functions will be allowed to run 
+ }, 5000);//after 4 seconds, hide overlay 
+    
+} else { }
+
+} //end find function  
     
     
 
@@ -190,16 +286,16 @@ let wrestlerClass = wrestler.replace(/^[^A-Z]+|[\W]+/ig, "") //remove spaces and
 $('#in-the-ring').on('click', '.pill', function() { 
 		playAudio("http://matthewsasso.com/royalrumble/sounds/explosion.wav");
 
- $(this).remove();
-	wrestlerName = $(this).html(); 
-	let wrestlerClass = wrestlerName.replace(/^[^A-Z]+|[\W]+/ig, "")
-    let nl = document.querySelectorAll(".list-of-wrestlers > ." + wrestlerClass); // get nodelist
+    $(this).remove(); //Removes the wrestler's pill when you click on it
+	wrestlerName = $(this).html();  //gets the wrestler name
+	let wrestlerClass = wrestlerName.replace(/^[^A-Z]+|[\W]+/ig, "") //sets the wrestler class we are going to search for based on the name
+    let nl = document.querySelectorAll(".list-of-wrestlers > ." + wrestlerClass); // select the wrestler card from the list based on their CSS class
     let arr = [];
     let names = [];
     for(let i = nl.length; i--; arr.unshift(nl[i])); // convert nodelist to array
     for (let x in arr) {
-    let userName = $(arr[x]).parent().parent().find("h2").html();
-    names.push(userName);
+    let userName = $(arr[x]).parent().parent().find("h2").html(); // get player name who has this wrestler
+    names.push(userName); 
     }   
     
     names = names.toString();
@@ -213,8 +309,7 @@ $('#in-the-ring').on('click', '.pill', function() {
 	setTimeout(function(){ $(".fullscreen").removeClass("reveal").addClass("fade") }, 4000);
 	setTimeout(function(){ $(".fullscreen").removeClass("fade").addClass("hide") }, 5000);//after 4 seconds, hide overlay
 });
-	
-	
+		
 //revive accidental deaths
 $('section').on('click', '.dead', function() { 
  $(this).removeClass("dead").addClass("active");
@@ -306,41 +401,10 @@ const CREATE_WRESTLER_GRID = () => {
 	
 
 	
-/******* Listen for timestamp of video, find match in exitTimes, do things if matched. ***/
-  // Get the video element
-  const video = document.querySelector('video');
 
-  // Add an event listener for the 'play' event
-  video.addEventListener('play', () => {
-    // Set an interval to run every 1000 milliseconds (1 second)
-    const interval = setInterval(() => {
-      // Get the current timestamp of the video
-      const videoTimestamp = Math.round(video.currentTime);
- 
 
-//Define the array we want to search as the exitTimes array    
-const array = exitTimes;
-        
-//Search the exitTimes array for a match to the videoTimestamp
-const found = array.find(number => number === videoTimestamp);
-
-if (found) {
-  console.log(`WOOOOO!!! The value "${videoTimestamp}" was found in the array.`);
-} else {
-  console.log(`The value "${videoTimestamp}" was not found in the array.`);
-}
-//end find function   
-        
-        
-    }, 1000);
-
-    // Clear the interval when the video stops playing
-    video.addEventListener('ended', () => {
-      clearInterval(interval);
-    });
-  });   
-    //end video functions
-  
+    
+    
     
 	
 	});
