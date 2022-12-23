@@ -42,7 +42,9 @@ let extra = [];
 let count = -1;
 let names = [];
 let order = [];
-    
+let exitTimes = [];
+let timeInRing = [];
+let showYear = 0; 
 
 //Get player names from input field, split into an array
   $('#players').keyup(function() {
@@ -90,11 +92,11 @@ getSheetData(showYear,"A2:E40").then(rows => {
     // Add the wrestler's name from the row to the names array
     names.push(row[1]);
     order.push(row[1]);
+    timeInRing.push(row[4])
   }
 });
 
 // Use the name values from the sheet
-console.log(names);
 setTimeout(function () {
     SHUFFLE(names); //run shuffle function, which includes function to create multidimensional array
     CREATE_WRESTLER_GRID(); // run function that puts wrestlers in DOM   
@@ -114,16 +116,6 @@ setTimeout(function () {
 }); //end
     
 
-
-	
-	//mark wrestlers as entered when clicked on DEPRECIATED
-/*
-$('section').on('click', '.inactive', function() { 
- $(this).addClass("active");
- wrestlerName = $(this).find("p").html();
-let wrestlerClass = wrestlerName.replace(/[^A-Z0-9]+/ig, "");
-  $("#in-the-ring").append(`<span class="${wrestlerClass}">${wrestlerName}</span>`);
-});  */
 	
     
     
@@ -155,9 +147,19 @@ extra.shift();
 	
 //mark wrestlers as entered when click "add new" button
 $('#in-the-ring').on('click', '#next-wrestler', function() { 
-    console.log(order);
+    
+let video = document.querySelector('video');// Get the video element
+let timestamp = Math.round(video.currentTime);// Get the current timestamp of the video
+    
 playAudio("http://matthewsasso.com/royalrumble/sounds/crowd.wav");
 count++; //add to the count so we can use that integer to reference a position in the wrestler array
+   
+    
+// Add timeInRing for this wrestler to their entry timestamp to determine their exitTime, push to exitTimes array
+let exitTime = Number(timeInRing[count]) + timestamp;
+exitTimes.push(exitTime);
+console.log(exitTimes);
+     
 let wrestler = order[count]; // wrestler name, array position
 let wrestlerClass = wrestler.replace(/^[^A-Z]+|[\W]+/ig, "") //remove spaces and special chars
  $("#in-the-ring").append(`<span class="${wrestlerClass} pill">${wrestler}</span>`);//add the wrestler to the top bar
@@ -302,36 +304,43 @@ const CREATE_WRESTLER_GRID = () => {
     
 }//end
 	
+
+	
+/******* Listen for timestamp of video, find match in exitTimes, do things if matched. ***/
+  // Get the video element
+  const video = document.querySelector('video');
+
+  // Add an event listener for the 'play' event
+  video.addEventListener('play', () => {
+    // Set an interval to run every 1000 milliseconds (1 second)
+    const interval = setInterval(() => {
+      // Get the current timestamp of the video
+      const videoTimestamp = Math.round(video.currentTime);
  
 
+//Define the array we want to search as the exitTimes array    
+const array = exitTimes;
+        
+//Search the exitTimes array for a match to the videoTimestamp
+const found = array.find(number => number === videoTimestamp);
 
-/*
-let year = {
-	eightEight: ["Tito Santana", "Bret Hart", "Butch Reed", "Jim Niedhart", "Jake Roberts", "Harley Race", "jim Brunzell", "Sam Houston", "Danny Davis", "Boris Zhukov", "Don Muraco", "Nikolai Volkoff", "Jim Duggan", "Ron Bass", "B. Brian Blair", "Hillybilly Jim", "Dino Bravo", "Ultimate Warrior", "One Man Gang", "Junkyard Dog"],
-	eightNine: ["Demolition Axe", "Demolition Smash", "Andre the Giant", "Mr. Perfect", "Ronnie Garvin", "Greg Valentine", "Jake Roberts", "Ron Bass", "Shawn Michaels", "Butch Miller", "Honkytonk Man", "Tito Santana", "Bad News Brown", "Marty Jannetty", "Randy Savage", "Arn Anderson", "Tully Blanchard", "Hulk Hogan", "Luke Williams", "Koko B. Ware", "The Warlord", "Big Bossman", "Akeem", "Brutus Beefcake", "Red Rooster", "The Barbarian", "John Studd", "Hercules", "Rick Martel", "Ted DiBiase"],
-	nineZero: ["Ted DiBiase", "Koko B. Ware", "Marty Jannetty", "Jake Roberts", "Randy Savage", "Roddy Piper", "The Warlord", "Bret Hart", "Bad News Brown", "Dusty Rhodes", "Andre the Giant", "Red Rooster", "Demolition Smash", "Akeem", "Jimmy Snuka", "Dino Bravo", " Earthquake", "Jim Niedhart", "Ultimate Warrior", "Rick Martel", "Tito Santana", "Honkytonk Man", "Hulk Hogan", "Shawn Michaels", "Rick Rude", "Hercules", "Mr. Perfect"],
-	nineOne: ["Bret Hart", "Dino Bravo", "Greg Valentine", "Paul Roma", "Kerry Von Erich", "Rick Martel", "Sama Simba", "Butch Miller", "Jake Roberts", "Hercules", "Tito Santana", "The Undertaker", "Jimmy Snuka", "Davey Boy Smith", "Demolition Smash", "LOD Hawk", "Shane Douglas", "Randy Savage", "LOD Animal", "Demolition Crush", "Jim Duggan", "Earthquake", "Mr. Perfect", "Hulk Hogan", "Haku", "Jim Niedhart", "Luke Williams", "Brian Knobbs", "The Warlord", "Tugboat"],
-	nineTwo: ["The British Bulldog", "Ted DiBiase", "Ric Flair", "Jerry Sags", "Haku", "Shawn Michaels", "Tito Santana", "The Barbarian", "Kerry Von Erich", "Repo Man", "Greg Valentine", "Nikolai Volkoff", "Big Bossman", "Hercules", "Roddy Piper", "Jake Roberts", "Jim Duggan", "Irwin R Schyster", "Jimi Snuka", "The Undertaker", "Randy Savage", "The Berzerker", "Virgil", "Col. Mustafa", "Rick Martel", "Hulk Hogan", "Skinner", "Sgt Slaughter", "Sid Justice", "The Warlord"],
-	nineThree: ["Ric Flair", "Bob Backlund", "Papa Shango", "Ted DiBiase", "Brian Knobbs", "Virgil", "Jerry Lawler", "Max Moon", "Genichiro Tenryu", "Mr. Perfect", "Skinner", " Koko B Ware", "Headshrinker Samu", "The Berzerker", "The Undertaker", " Terry Taylor", "Damien Demento", "Irwin R Schyster", "Tatanka", "Jerry Saga", "Typhoon", "Headshrinker Fatu", "Earthquake", "Carlos Colon", "Tito Santana", "Rick Martel", "Yokozuna", "Owen Hart", " Repo Man", "Randy Savage"],
-	nineFour: ["Scott Steiner", "Headshrinker Samu", "Rick Steiner", "Kwang", "Owen Hart", "Bart Gunn", "Diesel", "Bob Backlund", "Billy Gunn", "Virgil", "Randy Savage", "Jeff Jarrett", " Crush", "Doink", "Bam Bam Bigelow", "Mabel", "Sparky Plugg", "Shawn Michaels", "Mo", "Greg Valentine", "Tatanka", "Great Kabuki", "Lex Luger", "Genichiro Tenryu", "Bastian Booger", "Rick Martel", "Bret Hart", "Headshrinker Fatu", "Marty Jannetty", "Adam Bomb"],
-	nineFive: ["Shawn Michaels", "Davey Boy Smith", "Eli Blue", "Duke Droese", "Jimmy Del Ray", "Headshrinker Sionne", "Tom Pritchard", "Doink", "Kwang", "Rick Martel", "Owen Hart", "Timothy Well", "Luke Williams", "Jaco Blue", "King Kong Bundy", "Mo", "Mabel", "Butch Miller", "Lex Luger", "Mantaur", "Aldo Montoya", "Henry Godwinn", "Billy Gunn", "Bob Backlund", "Steven Dunn", "Dick Murdoch", "Adam Bomb", "Headshrinker Fatu", "Crush"],
-	nineSix: ["Hearst Hunter Helmsley", "Henry Godwinn", "Bob Backlund", "Jerry Lawler", "Bob Holly", "King Mabel", "Jake Roberts", "Dory Funk, Jr.", "Yokozuna", "1-2-3-Kid", "Takao Omori", "Savio Vega", "Vader", "Doug Gilbert", "Squat Team #1", "Squat Team #2", "Owen Hart", "Shawn Michaels", "Hakushi", "Tatanka", "Aldo Montoy", "Diesel", "Kama", "Steve Austin", "Barry Horowitz", "Fatu", "Isaac Yankem", "Marty Jannetty", "British Bulldog", "Duke Droese"],
-	nineSeven: ["Crush", "Ahmed Johnson", "Razor Ramon II", "Phinneas Godwinn", "Steve Austin", "Bart Gunn", "Jake Roberts", "British Bulldog", "Pierroth, Jr.", "The Sultan", "Mil Mascaras", "Hunter Hearst Helmsley", "Owen Hart", "Goldust", "Cibernetico", "Marc Mero", "Latin Lover", "Farooq", "Savio Vega", "Jesse James", "Bret Hart", "Jerry Lawler", "Diesel II", "Terry Funk", "Rocky Maivia", "Mankind", "Flash Funk", "Vader", "Henry Godwinn", "The Undertaker"],
-	nineEight: ["Cactus Jack", "Chainsaw Charlie", "Tom Brandi", "Rocky Maivia", "Headbanger Mosh", "Phinneas Godwinn", "DOA 8-Ball", "Blackjack Bradshaw", "Owen Hart", "Steve Blackman", "D-Lo Brown", "Kurrgan", "Marc Mero", "Ken Shamrock", "Headbanger Thrasher", "Mankind", "Goldust", "Jeff Jarrett", "Honkytonk Man", "Ahmed Johnson", "Mark Henry", "DOA Skull", "Kama Mustafa", "Steve Austin", "Henry Goodwinn", "Savio Vega", "Farooq", "Dude Love", "DOA Chainz", "Vader"],
-	nineNine: ["Steve Austin", "Vince McMahon", "Golga", "Darren Drosdov", "Edge", "Gillburg", "Steve Blackman", "Dan Severn", "Tiger Ali Singh", "Blue Meanie", "Mabel", "Jesse James", "Gangrel", "Kurrgan", "Al Snow", "Goldust", "The Godfather", "Kane", "Ken Shamrock", "Billy Gunn", "Test", "Big Bossman", "Hunter Hearst Helmsley", "Val Venis", "X-Pac", "Mark Henry", "Jeff Jarrett", "D-Lo Brown", "Owen Hart", "Chyna"],
-  ohOh: ["D'lo Brown", "Grand Master Sexay", "Mosh" , "Christian", "Rikishi", "Scotty 2 Hotty", "Steve Blackman", "Viscera", "Big Boss Man", "Test", "The British Bulldog", "Gangrel", "Edge", "Bob Backlund", "Chris Jericho", "Crash Holly", "Chyna", "Faarooq", "Road Dogg", "Al Snow", "Val Venis", "Prince Albert", "Hardcore Holly", "The Rock", "Billy Gunn", "Big Show", "Bradshaw", "Kane", "The Godfather", "X-Pac"],
-	ohOne: ["Jeff Hardy", "Bull Buchanan", "Matt Hardy", "Farooq", "Drew Carey", "Kane", "Raven", "Al Snow", "Perry Saturn", "Steve Blackman", "Grand Master Sexay", "Honkytonk Man", "The Rock", "The Godfather", "Tazz", "Bradshaw", "Prince Albert", "Hardcore Holly", "K-Kwik", "Val Venis", "William Regal", "Test", "Big Show", "Crash Holly", "The Undertaker", "Scotty Too Hotty", "Steve Austin", "Billy Gunn", "Haku", "Rikishi"],
-	ohTwo: ["Rikishi", "Goldust", "Big Bossman", "Bradshaw", "Lance Storm", "Al Snow", "Billy Gunn", "The Undertaker", "Matt Hardy", "Jeffy Hardy", "Maven", "Scotty Too Hotty", "Christian", "Diamond Dallas Page", "Chuck Palumbo", "The Godfather", "Albert", "Perry Saturn", "Steve Austin", "Val Venis", "Test", "Triple H", "Hurricane", "Farooq", "Mr. Perfect", "Kurt Angle", "The Big Show", "Kane", "Rob Van Dam", "Booker T"],
-	ohThree: ["Shawn Michaels", "Chris Jericho", "Christopher Nowinski", "Rey Mysterio", "Edge", "Christian", "Chavo Guerrero", "Yoshihiro Tajiri", "Bill DeMott", "Tommy Dreamer", "Bull Buchanan", "Rob Van Dam", "Matt Hardy", "Eddie Guerrero", "Jeff Hardy", "Rosey", "Test", "John Cena", "Charlie Haas", "Rikishi", "Jamal", "Kane", "Shelton Benjamin", "Booker T", "A-Train", "Maven", "Goldust", "Dave Batista", "Brock Lesnar", "The Undertaker"],
-	ohFour: ["Chris Benoit", "Randy Orton", "Mark Henry", "Yoshihiro Tajiri", "Bradshaw", "Rhyno", "Matt Hardy", "Scott Steiner", "Matt Morgan", "Hurricane", "Booker T", "Kane", "Spike Tudley", "Rikishi", "Rene Dupre", "A-Train", "Shelton Benjamin", "Ernest Miller", "Kurt Angle", "Rico", "Mick Foley", "Christian", "Nunzio", "The Big Show", "Chris Jericho", "Charlie Haas", "Billy Gunn", "John Cena", "Rob Van Dam", "Bill Goldberg"],
-	ohFive: ["Eddie Guerrero", "Chris Benoit", "Daniel Puder", "Bob Holly", "Hurricane", "Kenzo Suzuki", "Edge", "rey Mysterio", "Shelton Benjamin", "Booker T", "Chris Jericho", "Luther Reigns", "Muhammad Hassan", "Orlando Jordan", "Scotty Too Hotty", "Charlie Haas", "Rene Dupre", "Simon Dean", "Shawn Michaels", "Kurt Angle", "Jonathon Coachman", "Mark Jindrak", "Viscera", "Paul London", "John Cena", "Gene Snitsky", "Kane", "Batista", "Christian", "Ric Flair"],
-	ohSix: ["Triple H", "Rey Mysterio", "Simon Dean", "Psicosis", "Ric Flair", "The Big Show", "Jonathon Coachman", "Bobby Lashley", "Kane", "Sylvan Grenier", "Carlito", "Chris Benoit", "Booker T", "Joey Mercury", "Tatanka", "Johnny Nitro", "Trevor Murdoch", "Eugene", "Road Warrior Animal", "Rob Van Dam", "Orlando Jordan", "Chavo Guerrero", "Matt Hardy", "Super Crazy", "Shawn Michaels", "Chris Masters", "Viscera", "Shelton Benjamin", "Goldust", "Randy Orton"],
-	ohSeven: ["Ric Flair", "Fit Finlay", "Kenny Dykstra", "Matt Hardy", "Edge", "Tommy Dreamer", "Sabu", "Gregory Helms", "Shelton Benjamin", "Kane", "CM Punk", "Booker T", "Super Crazy", "Jeff Hardy", "Sandman", "Randy Orton", "Chris Benoit", "Rob Van Dam", "Viscera", "Johnny Nitro", "Kevin Thorn", "Hardcore Holly", "Shawn Michaels", "Chris Masters", "Chavo Guerrero", "MVP", "Carlito", "The Great Khali", "The Miz", "The Undertaker"],
-	ohEight: ["The Undertaker", "Shawn Michaels", "Santino Marella", "The Great Khali", "Hardcore Holly", "John Morrison", "Tommy Dreamer", "Batista", "Hornswoggle", "Chuck Palumbo", "Jaime Noble", "CM Punk", "Cody Rhodes", "Umaga", "Gene Snitsky", "The Miz", "Shelton Benjamin", "Jimmy Snuka", "Roddy Piper", "Kane", "Carlito", "Mick Foley", "Mr. Kennedy", "Big Daddy V", "Mark Henry", "Chavo Guerrero", "Fit Finlay", "Elijah Burke", "Triple H", "John Cena"],
-	ohNine: ["Rey Mysterio", "John Morrison", "Carlito Colon", "MVP", "The Great Khali", "Vladimir Kozlov", "Triple H", "Randy Orton", "JTG", "Ted DiBiase, Jr.", "Chris Jericho", "Mike Knox", "The Miz", "Fit Finlay", "Cody Rhodes", "The Undertaker", "Goldust", "CM Punk", "Mark Henry", "Shelton Benjamin", "William Regal", "Kofi Kingston", "Kane", "R-Truth", "Rob Van Dam", "Brian Kendrick", "Dolph Zigglar", "Santino Marella", "Jim Duggan", "The Big Show"],
-	ohTen: ["Dolph Ziggler", "Evan Bourne", "CM Punk", "JTG", "The Great Khali", "Beth Phoenix", "Zack Ryder", "Triple H", "Drew McIntyre", "Ted Dibiase, Jr.", "John Morrison", "Kane", "Cody Rhodes", "MVP", "Carlito", "The Miz", "Matt Hardy", "Shawn Michaels", "John Cena", "Shelton Benjamin", "Yoshi Tatsu", "The Big Show", "Mark Henry", "Chris Masters", "R-Truth", "Jack Swagger", "Kofi Kingston", "Chris Jericho", "Edge", "Batista"],
-    seventeen: ["Big Cass", "Chris Jericho", "Kalisto" , "Mojo Rawley" , "Jack Gallagher" , "Mark Henry" , "Braun Strowman" , "Sami Zayn" , "Big Show" , "Tye Dillinger" , "James Ellsworth" , "Dean Ambrose" , "Baron Corbin" , "Kofi Kingston" , "The Miz" , "Sheamus" , "Big E" , "Rusev",  "Cesaro" , "Xavier Woods" , "Bray Wyatt" , "Apollo Crews" , "Randy Orton" , "Dolph Ziggler", "Luke Harper" , "Brock Lesnar" , "Enzo Amore" , "Goldberg" , "The Undertaker" , "Roman Reigns"]
-}; */
-	
+if (found) {
+  console.log(`WOOOOO!!! The value "${videoTimestamp}" was found in the array.`);
+} else {
+  console.log(`The value "${videoTimestamp}" was not found in the array.`);
+}
+//end find function   
+        
+        
+    }, 1000);
+
+    // Clear the interval when the video stops playing
+    video.addEventListener('ended', () => {
+      clearInterval(interval);
+    });
+  });   
+    //end video functions
+  
+    
 	
 	});
