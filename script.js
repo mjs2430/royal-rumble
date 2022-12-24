@@ -119,6 +119,7 @@ setTimeout(function () {
  $('#start').click(function() {
     $("#button-frame").removeClass("show").addClass("hidden");
     $("#video").removeClass("hidden").addClass("show");
+     $("#get-ready").addClass("playing");
      $(".player-grid").prepend(`<button id="next-wrestler" type="button">ADD NEW</button>`);
 	});    //end	
     

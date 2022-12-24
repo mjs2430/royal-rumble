@@ -328,11 +328,15 @@ cursor: pointer;
 
 .playing {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 3fr 1fr;
 }
 
 .playing .player-grid .extra-wrestlers{
     display: none;
+}
+
+.playing .player-grid .addExtra {
+    display: none; 
 }
 
 .player-grid {
@@ -367,6 +371,7 @@ cursor: pointer;
 
 video {
     width: 100%;
+    margin-top: -10px;
 }
 .player-section {
   margin: 0px 10px 20px;
@@ -386,15 +391,13 @@ video {
 }
 
 .fullscreen {
-  top: 0;
-  padding: 0px 20px;
   display: flex;
   flex-direction: column;
-   z-index: 9999;
+  z-index: 9999;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-end;
   transition: all 1s;
-  width: 100vw;
+  width: 98vw;
   height: 100vh;
   max-width: 100%;
   max-height: 100%;
@@ -445,10 +448,8 @@ video {
 }
 
 .hide {
-  opacity: 0;
   z-index: 0;
-  transition: all 1s;
-  position: absolute;
+ display: none;
 }
 
 
