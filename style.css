@@ -268,31 +268,13 @@ cursor: pointer;
 }
 .wrestler-card p {
   margin: 0;
-  padding: 8px 0;
   font-size: 16px;
-  border: 1px solid #707070;
   text-transform: capitalize;
+  text-align: left;
 }
-.inactive button {
-  transition: all 1s;
-  color: #fff;
-  background: #707070;
-  width: 100%;
-  padding: 10px 24px 8px;
-  display: inline-block;
-  border: none;
-  margin: 0;
-  font-size: 14px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  font-family: 'Montserrat', sans-serif;
-cursor: pointer;
-}
-.inactive button:before {
-  content: "inactive";
-}
-.active button {
-  background: green;
+
+.active p {
+  color: green; 
   transition: all 1s;
 cursor: pointer;
 }

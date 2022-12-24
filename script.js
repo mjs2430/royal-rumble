@@ -158,7 +158,7 @@ $('.player-grid').on('click', '.addExtra', function() {
 	 if (extra.length > 0) {
     let wrestlerClass = extra[0].replace(/^[^A-Z]+|[\W]+/ig, "")
 	$(".extra-wrestlers .list-of-wrestlers ." + wrestlerClass).remove();
-$(this).siblings(".list-of-wrestlers").append(`<div class='wrestler-card inactive ${wrestlerClass}'><button type='button' class=''></button><p>${extra[0]}</p></div>`);
+$(this).siblings(".list-of-wrestlers").append(`<div class='wrestler-card inactive ${wrestlerClass}'><p>${extra[0]}</p></div>`);
 extra.shift();
 	 } else {   
          let  merged = [].concat.apply([], wrestlerNames); // merge our multidimensional array to one
@@ -169,10 +169,10 @@ extra.shift();
          excessWrestlers.push(addedWrestler); //push to an array to check against
          if (excessWrestlers.includes(addedWrestler)) { //if array includes new wrestler name
              addedWrestler = merged[1].replace(/^[^A-Z]+|[\W]+/ig, "") //get next wrestler name
-                          $(this).siblings(".list-of-wrestlers").append(`<div class='wrestler-card inactive ${addedWrestler}'><button type='button' class=''></button><p>${merged[1]}</p></div>`);
+                          $(this).siblings(".list-of-wrestlers").append(`<div class='wrestler-card inactive ${addedWrestler}'><p>${merged[1]}</p></div>`);
 
          } else {
-             $(this).siblings(".list-of-wrestlers").append(`<div class='wrestler-card inactive ${addedWrestler}'><button type='button' class=''></button><p>${merged[0]}</p></div>`);
+             $(this).siblings(".list-of-wrestlers").append(`<div class='wrestler-card inactive ${addedWrestler}'><p>${merged[0]}</p></div>`);
          }
      }
 }); 
@@ -387,7 +387,7 @@ const CREATE_WRESTLER_GRID = () => {
     for (let x in wrestlerNames) {
 		 for (let y in wrestlerNames[x]) {
 		let wrestlerClass = wrestlerNames[x][y].replace(/^[^A-Z]+|[\W]+/ig, "")
-			 	$(".player" + x +  " .list-of-wrestlers").append(`<div class='wrestler-card inactive ${wrestlerClass}'><button type='button' class=''></button><p>${wrestlerNames[x][y]}</p></div>`);
+			 	$(".player" + x +  " .list-of-wrestlers").append(`<div class='wrestler-card inactive ${wrestlerClass}'><p>${wrestlerNames[x][y]}</p></div>`);
 		 }
 	 };
 	  
@@ -398,7 +398,7 @@ const CREATE_WRESTLER_GRID = () => {
 				 let wrestlerClass = wrestlerNames[x][y].replace(/^[^A-Z]+|[\W]+/ig, "")
                  extra.push(wrestlerNames[x][y]); //add names to array that keeps extra unused wrestlers;
 				 	$(".extra-wrestlers").removeClass('hidden');
-			 	$(".extra-wrestlers .list-of-wrestlers").append(`<div class='wrestler-card inactive ${wrestlerClass}'><button type='button' class=''></button><p>${wrestlerNames[x][y]}</p></div>`);
+			 	$(".extra-wrestlers .list-of-wrestlers").append(`<div class='wrestler-card inactive ${wrestlerClass}'><p>${wrestlerNames[x][y]}</p></div>`);
 			 }
 		 }
 	 } else if (numberOfPlayers * wrestlersPerPlayer > 30){ //if too many players
@@ -415,7 +415,7 @@ const CREATE_WRESTLER_GRID = () => {
 					 let z = x + startLoop; // get an integer based on the remaining players so we can assign them the proper class in css
 					 for (let y in excessWrestlers[x]) {
 						 let wrestlerClass = excessWrestlers[x][y].replace(/^[^A-Z]+|[\W]+/ig, "")
-				 	$(".player" + z +  " .list-of-wrestlers").append(`<div class='wrestler-card inactive ${wrestlerClass}'><button type='button' class=''></button><p>${excessWrestlers[x][y]}</p></div>`);
+				 	$(".player" + z +  " .list-of-wrestlers").append(`<div class='wrestler-card inactive ${wrestlerClass}'><p>${excessWrestlers[x][y]}</p></div>`);
 					 }
 		 }
 	 }
