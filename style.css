@@ -191,7 +191,7 @@ main {
 
 }
 #next-wrestler {
-  display: inlnie;
+  align-self: center;
   position: relative;
   z-index: 9998;
   padding: 3px 15px;
