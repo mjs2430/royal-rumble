@@ -119,6 +119,7 @@ setTimeout(function () {
  $('#start').click(function() {
     $("#button-frame").removeClass("show").addClass("hidden");
     $("#video").removeClass("hidden").addClass("show");
+     $(".player-grid").prepend(`<button id="next-wrestler" type="button">ADD NEW</button>`);
 	});    //end	
     
     
@@ -178,7 +179,7 @@ extra.shift();
     
 	
 //**************** mark wrestlers as entered when click "add new" button ********/
-$('#in-the-ring').on('click', '#next-wrestler', function() { 
+$('.player-grid').on('click', '#next-wrestler', function() { 
   
 let video = document.querySelector('video');// Get the video element
 let timestamp = Math.round(video.currentTime);// Get the current timestamp of the video
@@ -283,7 +284,7 @@ if (found) {
 $(".list-of-wrestlers ." + wrestlerClass).removeClass("active").addClass("dead");
     
 //Show wrestler is dead notification    
-    let notification = `<div class="notification red noti-${wrestlerClass}"><h3><span>${wrestlerName}!</span> is dead!</h3><h3 class="userName">Finish drinking: <span>${names}</span></h3></div>`;//create a variable that is a fullscreen overlay
+    let notification = `<div class="notification red noti-${wrestlerClass}"><h3><span>${wrestlerName}</span> is dead!</h3><h3 class="userName">Finish drinking: <span>${names}</span></h3></div>`;//create a variable that is a fullscreen overlay
      $(notification).appendTo('.fullscreen'); //append it to main area of html
 	setTimeout(function(){ 
         $(".noti-" + wrestlerClass).addClass("reveal");
