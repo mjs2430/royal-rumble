@@ -26,8 +26,6 @@
         <button id="next-wrestler" type="button">ADD NEW</button>
 		<span>Active Rumblers:</span>
 	</section>
-	<section id="show-year" class="hidden">	
-	</section>
 <main> 
 	<section id="player-amount" class="show"> 
 			<label for="players">WHO IS RUMBLING TODAY?</label> 
@@ -82,15 +80,14 @@
 	</section>   
     
     <section id="get-ready" class="hidden">
-          <section class="player-grid"></section>   
-        <button id="start" type="button">start</button>
-        <button id="get-wrestlers" type="button">shuffle wrestlers again</button>
+        <section id="button-frame" class="show">
+            <button id="start" type="button"></button>
+            <button id="get-wrestlers" type="button">shuffle wrestlers again</button>
+        </section>
+        <video controls id="video" class="hidden"></video>
+        <section class="player-grid"></section>   
     </section>
     
-    <section class="playing hidden">
-        <video controls></video>
-	   <section class="player-grid"></section> 
-    </section>
     
     <div class="fullscreen"><div class="notification noti-${wrestlerClass}"><h3>Now entering the ring, <span>${wrestler}!</span></h3><h3 class="userName">Start drinking: <span>${names}</span></h3></div></div>
 </main>

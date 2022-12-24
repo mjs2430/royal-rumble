@@ -231,6 +231,11 @@ main {
 	margin-top: 30px;
 }
 
+#button-frame { 
+    text-align: center;
+    width: 100%;
+}
+
 .show {
   opacity: 1;
   z-index: 9997;
@@ -242,13 +247,13 @@ main {
 
 .hidden {
   opacity: 0;
-  z-index: 0;
+  z-index: 0!important;
   transition: all 1s;
-  position: fixed;	
+  position: fixed;	 
 }
 
 #year {
-	width: 200px;
+width: 200px;
 cursor: pointer;
 }
 
@@ -325,8 +330,39 @@ cursor: pointer;
     display: grid;
     grid-template-columns: 2fr 1fr;
 }
+
+.playing .player-grid .extra-wrestlers{
+    display: none;
+}
+
 .player-grid {
   text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+#get-ready {
+    width: 100%;
+    text-align: center;
+}
+
+#get-ready #start {
+    max-width: 300px;
+    margin: 0px 10px 20px 0;
+    background: mediumspringgreen;
+}
+
+#get-ready #get-wrestlers {
+    max-width: 260px;
+    margin-bottom: 20px;
+}
+
+#get-ready .player-grid {
+    text-align: center;
+    display: flex;
+    flex-flow: wrap;
+    flex-direction: row;
+    justify-content: center;
 }
 
 video {
@@ -337,6 +373,7 @@ video {
   padding: 0 5px 20px;
   background: #fff;
   box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.2);
+  align-self: start;
 }
 
 .player-section h2{

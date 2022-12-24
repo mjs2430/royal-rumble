@@ -60,7 +60,7 @@ let removeWrestlerRunning = false;
 			 $(".player-grid").append(`<div class="player${x} player-section"><h2>${playerNames[x]}</h2><div class="list-of-wrestlers"></div><button class="addExtra">Add extra wrestler</button></div>`);
 	 }   
 	 //create extra player space
-	 $(".player-grid").append(`<div class="extra-wrestlers hidden"><h2>Extra Wrestlers</h2><div class="list-of-wrestlers"></div></div>`);
+	 $(".player-grid").append(`<div class="extra-wrestlers"><h2>Extra Wrestlers</h2><div class="list-of-wrestlers"></div></div>`);
 	  numberOfPlayers = playerNames.length;//set number of players integer
 	 	$("#names").val("");	//clear the names input field when done
     $("#player-amount").removeClass("show").addClass("hidden");
@@ -81,9 +81,8 @@ wrestlersPerPlayer = parseInt(wrestlers); //convert value string to integer
 //get array of wrestlers by picking a year in the dropdown
 $("#year").change(function () { 
 let showYear = $('#year option:selected').text();
-  $("#wrestler-assignment").removeClass("show").addClass("hidden");
-    $("header").addClass("slideUp");
-    $("#get-ready").removeClass("hidden").addClass("show");
+
+
 
 // Call the google sheets function and pass in the selected year as the sheet name to get
 getSheetData(showYear,"A2:E40").then(rows => {
@@ -102,38 +101,34 @@ console.log(src);
 // Set the src attribute of the video element
 video.setAttribute('src', src);
 }) 
-    
+      
+ // Use the name values from the sheet
+setTimeout(function () {
+    SHUFFLE(names); //run shuffle function, which includes function to create multidimensional array
+    CREATE_WRESTLER_GRID(); // run function that puts wrestlers in DOM   
+  $("#wrestler-assignment").removeClass("show").addClass("hidden");
+    $("header").addClass("slideUp");
+    $("#get-ready").removeClass("hidden").addClass("show");
+    $("#start").html(`start the ${showYear} royal rumble`);
+}, 500);    
 
 }); //end
     
 
  /********* "are you ready" section ******/
  $('#start').click(function() {
- // Use the name values from the sheet
-setTimeout(function () {
-    SHUFFLE(names); //run shuffle function, which includes function to create multidimensional array
-    CREATE_WRESTLER_GRID(); // run function that puts wrestlers in DOM   
-     $("#get-ready").removeClass("show").addClass("hidden");
-    $(".playing").removeClass("hidden").addClass("show");
-    $("#in-the-ring").removeClass("hidden").addClass("show");
-    $("#show-year").append(`<h3>${showYear}</h3>`);
-    setTimeout(function () {
-    $("#show-year").removeClass("hidden").addClass("show")
-    }, 1000);
-    return showYear;
-
-}, 500);
+    $("#button-frame").removeClass("show").addClass("hidden");
+    $("#video").removeClass("hidden").addClass("show");
 	});    //end	
     
     
-//******* get wrestlers again if call to google sheets failed *****//
-    
+//******* shufle wrestlers again if needed *****//
 $('#get-wrestlers').click(function() {
-
 // Clear the array
 order.splice(0, order.length);
-$(".wrestler-card").remove();    
- // Call the google sheets function and pass in the selected year as the sheet name to get
+$(".wrestler-card").remove();   
+
+// Call the google sheets function and pass in the selected year as the sheet name to get
 getSheetData(showYear,"A2:E40").then(rows => {
   // Loop through the rows in the sheet
   for (const row of rows) {
@@ -143,15 +138,9 @@ getSheetData(showYear,"A2:E40").then(rows => {
     timeInRing.push(row[4])
   }     
     
-// Define the video element and the video source
-const video = document.querySelector('video');
-const src = showYear + '.mp4';
-console.log(src);
-// Set the src attribute of the video element
-video.setAttribute('src', src);
-}) 
-    
- // Use the name values from the sheet
+})     
+
+ // reshuffle
 setTimeout(function () {
     SHUFFLE(names); //run shuffle function, which includes function to create multidimensional array
     CREATE_WRESTLER_GRID(); // run function that puts wrestlers in DOM   
