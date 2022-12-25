@@ -12,8 +12,16 @@
   font-display: swap;
   src: local('Montserrat Medium'), local('Montserrat-Medium'), url(https://fonts.gstatic.com/s/montserrat/v14/JTURjIg1_i6t8kCHKm45_ZpC3gnD-w.ttf) format('truetype');
 }
+
+
+/*variables*/
+:root{
+--default-gray-blue: #13192d;
+--light-gray-blue: #949bb8;
+}
+
 html {
-  overflow-y: scroll;
+  overflow-y: hidden; 
 }
 ::-webkit-scrollbar {
   width: 0px;
@@ -138,14 +146,23 @@ header h1 {
   margin-right: 40px;
   text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
 }
+
+.badge {
+    position: absolute;
+    width: 25%;
+    height: 25%;
+    top: -18px;
+    right: -69px;
+    transform: rotate(25deg);
+}
 main {
   display: flex;
-  padding: 60px 0 30px;
+  padding: 60px 0 30px; 
   justify-content: center;
   width: 100vw;
   max-width: 100%;
   position: relative;
-
+    overflow: hidden;
 }
 #wrestler-amount,
 #wrestler-assignment {
@@ -271,15 +288,18 @@ cursor: pointer;
   font-size: 16px;
   text-transform: capitalize;
   text-align: left;
-        color: darkslategray;
+  color: #000;
+}
 
+.wrestler-card p.playing {
+    color: var(--light-gray-blue);
 }
 
 .active {
     background: #01794d;
 }
 .active p {
-  color: white;
+  color: #fff!important;
   font-weight: 900;
   transition: all 1s;
 }
@@ -288,7 +308,7 @@ cursor: pointer;
   border: none;
   transition: all 1s;
   text-decoration: line-through;
-  color: #aa2e2e;
+  color: #aa2e2e!important;
 }
 .slideUp {
   position: relative;
@@ -296,6 +316,10 @@ cursor: pointer;
   margin-top: -370px;
 }
 
+body.playing {
+    background: var(--default-gray-blue);
+    overflow: hidden;
+}
 .playing .player-grid .extra-wrestlers{
     display: none;
 }
@@ -334,7 +358,7 @@ cursor: pointer;
 #get-ready {
     width: 100%;
     text-align: center;
-    top: 20px;
+    top: 10px;
 }
 
 #get-ready #start {
@@ -362,21 +386,31 @@ cursor: pointer;
     flex-flow: wrap;
     flex-direction: row;
     justify-content: center; 
+    overflow: scroll;
 }
 
 #top {
     display: grid;
     grid-template-columns: 4fr 1fr;
+    background: var(--default-gray-blue);
+    max-height: 80vh;
+    overflow: hidden;
 }
 
 video {
     width: 100%;
     margin-top: -10px;
+    max-height: 80vh;
+    background-image: url(./img/bg/royalrumble.png);
 }
-
+ 
 #bottom {
     display: flex;
     flex-direction: column;
+    background: var(--default-gray-blue);
+    max-height: 20vh;
+    overflow: scroll;
+    border-top: 4px solid var(--light-gray-blue);
 }
 
  
@@ -393,7 +427,7 @@ video {
     display: flex;
     background: none;
     box-shadow: none;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid var(--light-gray-blue);
     padding: 0 0 5px 0;
 }
 
@@ -411,12 +445,15 @@ video {
 #bottom .player-section h2 {
     border-bottom: none;
     font-size: 20px;
+    color: #fff;
 }
 
 
 #notification-container {
-    overflow: hidden; 
-    padding: 0 5px;
+    overflow: scroll; 
+    padding: 10px 5px 5px 5px;
+    max-height: 80vh;
+    background: var(--default-gray-blue);
 }
 
 .notification {
@@ -424,7 +461,8 @@ video {
     margin-bottom: 5px;
     background: #01794d;
     color: #fff;
-    opacity: 0;
+   transform: translateX(100%);
+   transition: transform 1s;
 }
 
 .notification.red {
@@ -444,15 +482,15 @@ video {
 }
 
 .reveal {
-  opacity: 1;
+  transform: translateX(0);
   z-index: 9999;
   transition: all 1s;
   text-align: center;
 }
 
-.fade {
-	opacity: 0;
+.slide-out {
 	transition: all 700ms;
+    transform: translateX(110%);
 }
 
 .hide {

@@ -60,7 +60,7 @@ let removeWrestlerRunning = false;
 			 $(".player-grid").append(`<div class="player${x} player-section"><h2>${playerNames[x]}</h2><div class="list-of-wrestlers"></div><button class="addExtra">Add extra wrestler</button></div>`);
 	 }   
 	 //create extra player space
-	 $(".player-grid").append(`<div class="extra-wrestlers"><h2>Extra Wrestlers</h2><div class="list-of-wrestlers"></div></div>`);
+	 $(".player-grid").append(`<div class="extra-wrestlers player-section"><h2>Extra Wrestlers</h2><div class="list-of-wrestlers"></div></div>`);
 	  numberOfPlayers = playerNames.length;//set number of players integer
 	 	$("#names").val("");	//clear the names input field when done
     $("#player-amount").removeClass("show").addClass("hidden");
@@ -167,7 +167,7 @@ switch (showYear) {
 }
 
 // Call the google sheets function and pass in the selected year as the sheet name to get
-getSheetData(showYear,"A2:F32").then(rows => {
+getSheetData(showYear,"A2:G31").then(rows => {
   // Loop through the rows in the sheet
   for (const row of rows) {
     // Add the wrestler's name from the row to the names array
@@ -203,6 +203,11 @@ return showYear;
      $("#bottom").removeClass("hidden").addClass("show");
      $("#get-ready").addClass("playing");
      $("#notification-container").prepend(`<button id="next-wrestler" type="button">ADD NEW</button>`);
+    
+  setTimeout(function () {   
+     $("body").addClass("playing");
+     $(".wrestler-card p").addClass("playing");
+ }, 800); 
      
 // Define the DOM object to cut
 const elementToCut = document.getElementById('player-grid');
@@ -247,7 +252,7 @@ const year = element.className;
   
 
 // Call the google sheets function and pass in the selected year as the sheet name to get
-getSheetData(year,"A2:F32").then(rows => {
+getSheetData(year,"A2:G31").then(rows => {
   // Loop through the rows in the sheet
   for (const row of rows) {
     // Add the wrestler's name from the row to the names array
@@ -330,18 +335,17 @@ let wrestlerClass = wrestler.replace(/^[^A-Z]+|[\W]+/ig, "") //remove spaces and
  $(".inactive." + wrestlerClass).addClass("active");//change wrestler in grid to active colors
 
      
-let notification = `<div class="notification noti-${wrestlerClass}"><h3><span>${wrestler}</span> entered the ring!</h3><h3 class="userName">Start drinking: <span>${names}</span></h3></div>`;//create a variable that is a fullscreen overlay
-     $(notification).appendTo('#notification-container'); //append it to main area of html
+let notification = `<div class="notification noti-${wrestlerClass}"><h3><span>${wrestler}</span> entered the ring!</h3><h3 class="userName">Start drinking: <span>${names}</span></h3></div>`;//create a notification variable
+     $(notification).appendTo('#notification-container'); //append it to notification area of html
 	setTimeout(function(){ 
         $(".noti-" + wrestlerClass).addClass("reveal");
-        //addWrestlerRunning = true; // lets us know this function is running so other functions won't run  
-    }, 100); //after 100ms, fade in
+    }, 100); //after 100ms, slide-in
     
   setTimeout(function(){ 
-      $(".noti-" + wrestlerClass).removeClass("reveal").addClass("fade");
+      $(".noti-" + wrestlerClass).removeClass("reveal").addClass("slide-out");
         }, 20000);
 	setTimeout(function(){ 
-        $(".noti-" + wrestlerClass).removeClass("fade").addClass("hide");      
+        $(".noti-" + wrestlerClass).removeClass("slide-out").addClass("hide");      
         //addWrestlerRunning = false; //sets the value to false so other functions will be allowed to run 
  }, 21000);//after 20 seconds, hide overlay 
     
@@ -392,7 +396,7 @@ if (found) {
     
     names = names.toString();
     names = names.replace(/,/g, ', ');
-    names = names.replace('-', ''); //remove hyphen from end of player's name
+    names = names.replace(/-/g, ''); //remove hyphen from end of player's name
     
     if (deadCount == 30) {
      console.log("entry times " + entryTimes);
@@ -407,13 +411,13 @@ $(".list-of-wrestlers ." + wrestlerClass).removeClass("active").addClass("dead")
 	setTimeout(function(){ 
         $(".noti-" + wrestlerClass).addClass("reveal");
         //addWrestlerRunning = true; // lets us know this function is running so other functions won't run  
-    }, 100); //after 100ms, fade in
+    }, 100); //after 100ms, slide-in
     
   setTimeout(function(){ 
-      $(".noti-" + wrestlerClass).removeClass("reveal").addClass("fade");
+      $(".noti-" + wrestlerClass).removeClass("reveal").addClass("slide-out");
         }, 20000);
 	setTimeout(function(){ 
-        $(".noti-" + wrestlerClass).removeClass("fade").addClass("hide");      
+        $(".noti-" + wrestlerClass).removeClass("slide-out").addClass("hide");      
         //addWrestlerRunning = false; //sets the value to false so other functions will be allowed to run 
  }, 21000);//after 4 seconds, hide overlay 
     
