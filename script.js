@@ -60,7 +60,7 @@ let removeWrestlerRunning = false;
 			 $(".player-grid").append(`<div class="player${x} player-section"><h2>${playerNames[x]}</h2><div class="list-of-wrestlers"></div><button class="addExtra">Add extra wrestler</button></div>`);
 	 }   
 	 //create extra player space
-	 $(".player-grid").append(`<div class="extra-wrestlers player-section"><h2>Extra Wrestlers</h2><div class="list-of-wrestlers"></div></div>`);
+	 $(".player-grid").append(`<div class="extra-wrestlers"><h2>Extra Wrestlers</h2><div class="list-of-wrestlers"></div></div>`);
 	  numberOfPlayers = playerNames.length;//set number of players integer
 	 	$("#names").val("");	//clear the names input field when done
     $("#player-amount").removeClass("show").addClass("hidden");

@@ -18,6 +18,7 @@
 :root{
 --default-gray-blue: #13192d;
 --light-gray-blue: #949bb8;
+--extra-light-gray-blue: #dadff4;
 }
 
 html {
@@ -320,6 +321,21 @@ body.playing {
     background: var(--default-gray-blue);
     overflow: hidden;
 }
+
+.extra-wrestlers {
+  margin: 0px 10px 20px;
+  padding: 0 5px 20px;
+  background: var(--extra-light-gray-blue);
+  box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.2);
+  align-self: start;
+}
+
+.extra-wrestlers h2{
+    border-bottom: 1px solid black;
+    padding: 5px 0;
+    margin: 0;
+}
+
 .playing .player-grid .extra-wrestlers{
     display: none;
 }
