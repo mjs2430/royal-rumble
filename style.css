@@ -22,7 +22,7 @@
 }
 
 html {
-  overflow-y: scroll;  
+    overflow: scroll
 }
 ::-webkit-scrollbar {
   width: 0px;
@@ -34,7 +34,6 @@ body {
   font-size: 18px;
   background: #f4f4f4;
   max-width: 100%;
-  overflow-x: hidden;
 }
 label,
 h2 {
@@ -163,7 +162,6 @@ main {
   width: 100vw;
   max-width: 100%;
   position: relative;
-    overflow: hidden;
 }
 #wrestler-amount,
 #wrestler-assignment {
@@ -319,7 +317,6 @@ cursor: pointer;
 
 body.playing {
     background: var(--default-gray-blue);
-    overflow: hidden;
 }
 
 .extra-wrestlers {
@@ -402,13 +399,14 @@ body.playing {
     flex-flow: wrap;
     flex-direction: row;
     justify-content: center; 
-    overflow: scroll;
 }
 
 #top {
     display: flex;
     background-image: url(./img/bg/royalrumble.png);
-    overflow: hidden;
+    position: sticky;
+    top: 0;
+    z-index: 9999;
 }
 
 video {
@@ -416,20 +414,19 @@ video {
 }
  
 #bottom {
-    display: flex;
-    flex-direction: column;
     background: var(--default-gray-blue);
     border-top: 4px solid var(--light-gray-blue);
+    width: 100vw;
 }
 
  
 #bottom .player-grid {
     text-align: left;
     display: flex;
-    flex-flow: wrap;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: flex-start;
-    overflow: scroll;
+    width: 100%;
 }
 
 #bottom .player-section {
@@ -467,10 +464,10 @@ video {
 
 
 #notification-container {
-    overflow: scroll; 
     padding: 10px 5px 5px 5px;
     background: var(--default-gray-blue);
     width: 19vw;
+    overflow: scroll;
 }
 
 .notification {

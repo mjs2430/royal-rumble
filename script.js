@@ -205,11 +205,10 @@ return showYear;
      $("#get-ready").addClass("playing");
      $("#notification-container").prepend(`<button id="next-wrestler" type="button">ADD NEW</button>`);
      const htmlElement = document.querySelector('html');
-     htmlElement.style.overflow = 'hidden';
      setTimeout(function () {   
      $("body").addClass("playing");
      $(".wrestler-card p").addClass("playing");
-    $(".extra-wrestlers").remove()
+    $(".extra-wrestlers").remove();
  }, 800); 
      
 // Define the DOM object to cut
@@ -240,11 +239,11 @@ hyphens.forEach(element => {
 const topSection = document.querySelector('#top');
 const vid = document.querySelector('video');
 const notificationContainer = document.querySelector('#notification-container');
-const bottom = document.querySelector('#bottom');
+const bottom = document.querySelector('.player-section');
 
-topSection.style.height = `calc(100vh - ${bottom.offsetHeight}px)`;
-vid.style.height = `calc(100vh - ${bottom.offsetHeight}px)`;
-notificationContainer.style.height = `calc(100vh - ${bottom.offsetHeight}px)`;
+topSection.style.height = `calc(100vh - ${bottom.offsetHeight}px  - 4px)`;
+vid.style.height = `calc(100vh - ${bottom.offsetHeight}px  - 4px)`;
+notificationContainer.style.height = `calc(100vh - ${bottom.offsetHeight}px) - 4px`;
  
 	});    //end	
     
