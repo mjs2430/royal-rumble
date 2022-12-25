@@ -82,7 +82,25 @@ wrestlersPerPlayer = parseInt(wrestlers); //convert value string to integer
 $("#year").change(function () { 
 let showYear = $('#year option:selected').text();
 
+ /**********  ****************************************************** 
+    WORKING HERE ON GETTING THE RIGHT URL
+ ****************************************************************************** 
+ ******************************************************
+******/
+    
+// emby URL setting based on the year
+let emby;
 
+switch (showYear) {
+  case '2001':
+    emby = 'http://66.10.240.172:8096/emby/Items/51978/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=697d5b13c99a16d99050fdf8b78d3764';
+    break;
+  case 'a':
+    emby = 'b';
+    break;
+  default:
+    emby = null;
+}
 
 // Call the google sheets function and pass in the selected year as the sheet name to get
 getSheetData(showYear,"A2:F32").then(rows => {
@@ -96,9 +114,8 @@ getSheetData(showYear,"A2:F32").then(rows => {
     
 // Define the video element and the video source
 const video = document.querySelector('video');
-const src = showYear + '.mp4';
 // Set the src attribute of the video element
-video.setAttribute('src', src);
+video.setAttribute('src', emby);
 }) 
       
  // Use the name values from the sheet
@@ -154,14 +171,16 @@ hyphens.forEach(element => {
 //******* shufle wrestlers again if needed *****//
 $('#get-wrestlers').click(function() {
 
+// Clear the arrays
+order.splice(0, order.length);
+names.splice(0, names.length);
+$(".wrestler-card").remove(); 
+    
 //get year from "start" button
 const element = document.querySelector('#start');
 const year = element.className;
-console.log(year); // 'my-class'
 
-// Clear the array
-order.splice(0, order.length);
-$(".wrestler-card").remove();   
+  
 
 // Call the google sheets function and pass in the selected year as the sheet name to get
 getSheetData(year,"A2:F32").then(rows => {
