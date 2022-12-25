@@ -84,11 +84,17 @@
             <button id="start" type="button"></button>
             <button id="get-wrestlers" type="button">shuffle wrestlers again</button>
         </section>
-        <video controls id="video" class="hidden"></video>
-        <section class="player-grid"></section>   
+        <section class="player-grid" id="player-grid"></section> 
+        <section id="left" class="hidden">
+            <video controls id="video"></video>
+        </section>
+        <section id="right" class="hidden">
+            <section class="notification-container"></section>
+        </section>
+        
+          
     </section>
     
-    <div class="fullscreen"></div>
 </main>
 <!-- partial -->
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>

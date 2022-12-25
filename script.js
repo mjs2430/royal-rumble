@@ -118,9 +118,24 @@ setTimeout(function () {
  /********* "are you ready" section ******/
  $('#start').click(function() {
     $("#button-frame").removeClass("show").addClass("hidden");
-    $("#video").removeClass("hidden").addClass("show");
+    $("#left").removeClass("hidden").addClass("show");
+     $("right").removeClass("hidden").addClass("show");
      $("#get-ready").addClass("playing");
      $(".player-grid").prepend(`<button id="next-wrestler" type="button">ADD NEW</button>`);
+     
+// Define the DOM object to cut
+const elementToCut = document.getElementById('player-grid');
+
+// Cut the element by removing it from the DOM
+elementToCut.remove();
+
+// Define the DOM object to paste the cut element after
+const referenceElement = document.getElementById('left');
+
+// Paste the cut element after the reference element
+referenceElement.append(elementToCut);
+
+     
 	});    //end	
     
     
