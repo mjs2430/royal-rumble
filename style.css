@@ -195,9 +195,9 @@ main {
   position: relative;
   z-index: 9998;
   padding: 3px 15px;
-  margin: 0 5px 0 0;
+  margin: 0 5px 10px 0;
   color: #000;
-  background: lightblue;
+  background-color: lightblue;
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: 12px;
@@ -216,7 +216,7 @@ main {
   outline: none;
 }
 #next-wrestler:hover {
-  background: #f4f4f4;
+  background-color: cornflowerblue;
 }
 
 #show-year {
@@ -271,46 +271,29 @@ cursor: pointer;
   font-size: 16px;
   text-transform: capitalize;
   text-align: left;
+        color: darkslategray;
+
 }
 
+.active {
+    background: #01794d;
+}
 .active p {
-  color: green; 
+  color: white;
+  font-weight: 900;
   transition: all 1s;
-cursor: pointer;
 }
-.active button:before {
-  content: "rumblin'";
-}
-.dead {
-  cursor: pointer;
-}
-.dead button {
-  cursor: pointer;
-  background: #aa2e2e;
-  transition: all 1s;
-  text-decoration: line-through;
-cursor: pointer;
-}
-.dead button:before {
-  content: "dead";
-}
+
 .dead p {
-  background: #aa2e2e;
   border: none;
   transition: all 1s;
   text-decoration: line-through;
-cursor: pointer;
-    color: #fff;
+  color: #aa2e2e;
 }
 .slideUp {
   position: relative;
   transition: all 2s;
-  margin-top: -350px;
-}
-
-.playing {
-    display: grid;
-    grid-template-columns: 4fr 1fr;
+  margin-top: -370px;
 }
 
 .playing .player-grid .extra-wrestlers{
@@ -327,39 +310,6 @@ cursor: pointer;
   grid-template-columns: 1fr 1fr 1fr;
 }
 
-#get-ready {
-    width: 100%;
-    text-align: center;
-}
-
-#get-ready #start {
-    max-width: 300px;
-    margin: 0px 10px 20px 0;
-    background: mediumspringgreen;
-}
-
-#get-ready #get-wrestlers {
-    max-width: 260px;
-    margin-bottom: 20px;
-}
-
-#get-ready .player-grid {
-    text-align: center;
-    display: flex;
-    flex-flow: wrap;
-    flex-direction: row;
-    justify-content: center; 
-}
-
-#left {
-    display: flex;
-    flex-direction: column;
-}
-
-video {
-    width: 100%;
-    margin-top: -10px;
-}
 .player-section {
   margin: 0px 10px 20px;
   padding: 0 5px 20px;
@@ -381,36 +331,116 @@ video {
     
 }
 
-.notification-container {
-    
+#get-ready {
+    width: 100%;
+    text-align: center;
+    top: 20px;
+}
+
+#get-ready #start {
+    max-width: 300px;
+    margin: 0px 10px 20px 0;
+    background: mediumspringgreen;
+}
+
+#get-ready #start:hover {
+  background-color: #7be9b2;
+}
+
+#get-ready #get-wrestlers {
+    max-width: 260px;
+    margin-bottom: 20px;
+}
+
+#get-ready #get-wrestlers:hover {
+    background-color: cornflowerblue;
+}
+
+#get-ready .player-grid {
+    text-align: center;
+    display: flex;
+    flex-flow: wrap;
+    flex-direction: row;
+    justify-content: center; 
+}
+
+#top {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+}
+
+video {
+    width: 100%;
+    margin-top: -10px;
+}
+
+#bottom {
+    display: flex;
+    flex-direction: column;
+}
+
+ 
+#bottom .player-grid {
+    text-align: left;
+    display: flex;
+    flex-flow: wrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 0 10px;
+}
+
+#bottom .player-section {
+    display: flex;
+    background: none;
+    box-shadow: none;
+    border-bottom: 1px solid black;
+    padding: 0 0 5px 0;
+}
+
+#bottom .list-of-wrestlers {
+    display: flex;
+    align-items: center;    
+}
+
+#bottom .wrestler-card {
+    width: auto;
+    text-align: left;
+    margin: 0 0 0 5px;
+}
+
+#bottom .player-section h2 {
+    border-bottom: none;
+    font-size: 20px;
+}
+
+
+#notification-container {
+    overflow: hidden; 
+    padding: 0 5px;
 }
 
 .notification {
-    padding: 0px 30px;
-    margin-bottom: 10px;
+    padding: 8px; 
+    margin-bottom: 5px;
     background: #01794d;
     color: #fff;
     opacity: 0;
-    border: 1px solid #01794d;
-    border-radius: 10px;
-    box-shadow: 5px 5px 20px #333;
 }
 
 .notification.red {
     background: #aa2e2e;
-    border: 1px solid #aa2e2e;
 }
 
 .notification h3 {
-        text-align: center;
+        text-align: left;
         display: block;
-        font-size: 20px;
-        letter-spacing: 1px;
+        font-size: 16px;
+        margin: 0 0 5px 0;
     }
 
 .notification h3 span {
     font-family: 'Lacquer', sans-serif;
-    font-size: 24px;
+    font-size: 18px;
 }
 
 .reveal {

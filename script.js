@@ -9,9 +9,9 @@ const API_KEY = 'AIzaSyC-9cY7xA-_BsMvRieTFsO4thZp6jkkIKU';
   // Replace SPREADSHEET_ID with the ID of the spreadsheet you want to import
 const SPREADSHEET_ID = '1NFjwvQqcK5Aa4NgC37nRg3Tp9TXdzy4tz03RwY_cuMQ';
 
-//******* Define a function to retrieve data from a specific sheet. sheetName is an argument to be passed in later when calling this function. I use it to call in the year and the range (columns or rows) ***///
+//******* Define a function to retrieve data from a specific sheet. sheetName is an argument to be passed in later when calling this function. I use it to call in the year and range to skip the first row, the header row ***///
 // Define a function to retrieve data from a specific sheet
-const getSheetData = async (sheetName,range) => {
+const getSheetData = async (sheetName, range) => {
   // Build the API request URL to get the data from the sheet, skipping the first row
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${sheetName}!${range}?key=${API_KEY}`;
 
@@ -85,7 +85,7 @@ let showYear = $('#year option:selected').text();
 
 
 // Call the google sheets function and pass in the selected year as the sheet name to get
-getSheetData(showYear,"A2:E40").then(rows => {
+getSheetData(showYear,"A2:F32").then(rows => {
   // Loop through the rows in the sheet
   for (const row of rows) {
     // Add the wrestler's name from the row to the names array
@@ -97,7 +97,6 @@ getSheetData(showYear,"A2:E40").then(rows => {
 // Define the video element and the video source
 const video = document.querySelector('video');
 const src = showYear + '.mp4';
-console.log(src);
 // Set the src attribute of the video element
 video.setAttribute('src', src);
 }) 
@@ -110,18 +109,19 @@ setTimeout(function () {
     $("header").addClass("slideUp");
     $("#get-ready").removeClass("hidden").addClass("show");
     $("#start").html(`start the ${showYear} royal rumble`);
+    $("#start").addClass(showYear);
 }, 500);    
-
+return showYear;
 }); //end
     
 
  /********* "are you ready" section ******/
  $('#start').click(function() {
     $("#button-frame").removeClass("show").addClass("hidden");
-    $("#left").removeClass("hidden").addClass("show");
-     $("right").removeClass("hidden").addClass("show");
+    $("#top").removeClass("hidden").addClass("show");
+     $("#bottom").removeClass("hidden").addClass("show");
      $("#get-ready").addClass("playing");
-     $(".player-grid").prepend(`<button id="next-wrestler" type="button">ADD NEW</button>`);
+     $("#notification-container").prepend(`<button id="next-wrestler" type="button">ADD NEW</button>`);
      
 // Define the DOM object to cut
 const elementToCut = document.getElementById('player-grid');
@@ -130,23 +130,41 @@ const elementToCut = document.getElementById('player-grid');
 elementToCut.remove();
 
 // Define the DOM object to paste the cut element after
-const referenceElement = document.getElementById('left');
+const referenceElement = document.getElementById('bottom');
 
 // Paste the cut element after the reference element
 referenceElement.append(elementToCut);
 
+//add a comma to the wrestler list
+const commas = document.querySelectorAll('.wrestler-card:not(:last-child) p');
+commas.forEach(element => {
+  element.innerHTML += ',';
+});
      
+//add a separator to the player name title
+const hyphens = document.querySelectorAll('.player-grid h2');
+hyphens.forEach(element => {
+  element.innerHTML += ' - ';
+});
+     
+
 	});    //end	
     
     
 //******* shufle wrestlers again if needed *****//
 $('#get-wrestlers').click(function() {
+
+//get year from "start" button
+const element = document.querySelector('#start');
+const year = element.className;
+console.log(year); // 'my-class'
+
 // Clear the array
 order.splice(0, order.length);
 $(".wrestler-card").remove();   
 
 // Call the google sheets function and pass in the selected year as the sheet name to get
-getSheetData(showYear,"A2:E40").then(rows => {
+getSheetData(year,"A2:F32").then(rows => {
   // Loop through the rows in the sheet
   for (const row of rows) {
     // Add the wrestler's name from the row to the names array
@@ -195,7 +213,7 @@ extra.shift();
     
 	
 //**************** mark wrestlers as entered when click "add new" button ********/
-$('.player-grid').on('click', '#next-wrestler', function() { 
+$('#notification-container').on('click', '#next-wrestler', function() { 
   
 let video = document.querySelector('video');// Get the video element
 let timestamp = Math.round(video.currentTime);// Get the current timestamp of the video
@@ -212,7 +230,6 @@ console.log(exitTimes);
      
 let wrestler = order[count]; // wrestler name, array position
 let wrestlerClass = wrestler.replace(/^[^A-Z]+|[\W]+/ig, "") //remove spaces and special chars
- $("#in-the-ring").append(`<span class="${wrestlerClass} pill">${wrestler}</span>`);//add the wrestler to the top bar
 	
     let nl = document.querySelectorAll(".list-of-wrestlers > ." + wrestlerClass); // get nodelist
     let arr = [];
@@ -225,12 +242,13 @@ let wrestlerClass = wrestler.replace(/^[^A-Z]+|[\W]+/ig, "") //remove spaces and
     
     names = names.toString();
     names = names.replace(/,/g, ', ');
+    names = names.replace(/-/g, '');
     
  $(".inactive." + wrestlerClass).addClass("active");//change wrestler in grid to active colors
 
      
-let notification = `<div class="notification noti-${wrestlerClass}"><h3>Now entering the ring, <span>${wrestler}!</span></h3><h3 class="userName">Start drinking: <span>${names}</span></h3></div>`;//create a variable that is a fullscreen overlay
-     $(notification).appendTo('.fullscreen'); //append it to main area of html
+let notification = `<div class="notification noti-${wrestlerClass}"><h3><span>${wrestler}</span> entered the ring!</h3><h3 class="userName">Start drinking: <span>${names}</span></h3></div>`;//create a variable that is a fullscreen overlay
+     $(notification).appendTo('#notification-container'); //append it to main area of html
 	setTimeout(function(){ 
         $(".noti-" + wrestlerClass).addClass("reveal");
         //addWrestlerRunning = true; // lets us know this function is running so other functions won't run  
@@ -238,11 +256,11 @@ let notification = `<div class="notification noti-${wrestlerClass}"><h3>Now ente
     
   setTimeout(function(){ 
       $(".noti-" + wrestlerClass).removeClass("reveal").addClass("fade");
-        }, 4000);
+        }, 20000);
 	setTimeout(function(){ 
         $(".noti-" + wrestlerClass).removeClass("fade").addClass("hide");      
         //addWrestlerRunning = false; //sets the value to false so other functions will be allowed to run 
- }, 5000);//after 4 seconds, hide overlay 
+ }, 21000);//after 20 seconds, hide overlay 
     
 });   //end	 
     
@@ -291,6 +309,7 @@ if (found) {
     
     names = names.toString();
     names = names.replace(/,/g, ', ');
+    names = names.replace('-', ''); //remove hyphen from end of player's name
     
     if (deadCount == 30) {
      console.log("entry times " + entryTimes);
@@ -301,7 +320,7 @@ $(".list-of-wrestlers ." + wrestlerClass).removeClass("active").addClass("dead")
     
 //Show wrestler is dead notification    
     let notification = `<div class="notification red noti-${wrestlerClass}"><h3><span>${wrestlerName}</span> is dead!</h3><h3 class="userName">Finish drinking: <span>${names}</span></h3></div>`;//create a variable that is a fullscreen overlay
-     $(notification).appendTo('.fullscreen'); //append it to main area of html
+     $(notification).appendTo('#notification-container'); //append it to main area of html
 	setTimeout(function(){ 
         $(".noti-" + wrestlerClass).addClass("reveal");
         //addWrestlerRunning = true; // lets us know this function is running so other functions won't run  
@@ -309,11 +328,11 @@ $(".list-of-wrestlers ." + wrestlerClass).removeClass("active").addClass("dead")
     
   setTimeout(function(){ 
       $(".noti-" + wrestlerClass).removeClass("reveal").addClass("fade");
-        }, 4000);
+        }, 20000);
 	setTimeout(function(){ 
         $(".noti-" + wrestlerClass).removeClass("fade").addClass("hide");      
         //addWrestlerRunning = false; //sets the value to false so other functions will be allowed to run 
- }, 5000);//after 4 seconds, hide overlay 
+ }, 21000);//after 4 seconds, hide overlay 
     
 } else { }
 
@@ -321,43 +340,6 @@ $(".list-of-wrestlers ." + wrestlerClass).removeClass("active").addClass("dead")
     
     
 
-//mark wrestlers as exited when pill clicked on
-$('#in-the-ring').on('click', '.pill', function() { 
-		playAudio("http://matthewsasso.com/royalrumble/sounds/explosion.wav");
-
-    $(this).remove(); //Removes the wrestler's pill when you click on it
-	wrestlerName = $(this).html();  //gets the wrestler name
-	let wrestlerClass = wrestlerName.replace(/^[^A-Z]+|[\W]+/ig, "") //sets the wrestler class we are going to search for based on the name
-    let nl = document.querySelectorAll(".list-of-wrestlers > ." + wrestlerClass); // select the wrestler card from the list based on their CSS class
-    let arr = [];
-    let names = [];
-    for(let i = nl.length; i--; arr.unshift(nl[i])); // convert nodelist to array
-    for (let x in arr) {
-    let userName = $(arr[x]).parent().parent().find("h2").html(); // get player name who has this wrestler
-    names.push(userName); 
-    }   
-    
-    names = names.toString();
-    names = names.replace(/,/g, ', ');
-    
-    $(".list-of-wrestlers ." + wrestlerClass).removeClass("active").addClass("dead");
- let fullscreen = `<div class="fullscreen red"><h2>${wrestlerName}</h2><h3>Is dead!</h3><p class="userName">Finish drinking: <span>${names}!</span></p></div>`;//create a variable that is a fullscreen overlay
-     $(fullscreen).appendTo('main'); //append it to main area of html
-	setTimeout(function(){ $(".fullscreen").addClass("reveal") }, 100); //after 100ms, fade in
-	 $(".inactive." + wrestlerClass).addClass("active");//change wrestler in grid to active colors
-	setTimeout(function(){ $(".fullscreen").removeClass("reveal").addClass("fade") }, 4000);
-	setTimeout(function(){ $(".fullscreen").removeClass("fade").addClass("hide") }, 5000);//after 4 seconds, hide overlay
-});
-		
-//revive accidental deaths
-$('section').on('click', '.dead', function() { 
- $(this).removeClass("dead").addClass("active");
-$(this).find("p").removeClass("dead");
-	wrestlerName = $(this).find("p").html(); 
-	let wrestlerClass = wrestlerName.replace(/^[^A-Z]+|[\W]+/ig, "")
-	$("#in-the-ring").append(`<span class="${wrestlerClass} pill">${wrestlerName}</span>`);
-}); 
-    
     
 
 	
