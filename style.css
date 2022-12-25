@@ -22,7 +22,7 @@
 }
 
 html {
-  overflow-y: hidden; 
+  overflow-y: scroll;  
 }
 ::-webkit-scrollbar {
   width: 0px;
@@ -281,7 +281,7 @@ cursor: pointer;
   display: inline-block;
   text-align: center;
   justify-content: center;
-  margin: 8px;
+  margin: 5px;
   width: 180px;
 }
 .wrestler-card p {
@@ -406,26 +406,19 @@ body.playing {
 }
 
 #top {
-    display: grid;
-    grid-template-columns: 4fr 1fr;
-    background: var(--default-gray-blue);
-    max-height: 80vh;
+    display: flex;
+    background-image: url(./img/bg/royalrumble.png);
     overflow: hidden;
 }
 
 video {
-    width: 100%;
-    margin-top: -10px;
-    max-height: 80vh;
-    background-image: url(./img/bg/royalrumble.png);
+    width: 81vw;
 }
  
 #bottom {
     display: flex;
     flex-direction: column;
     background: var(--default-gray-blue);
-    max-height: 20vh;
-    overflow: scroll;
     border-top: 4px solid var(--light-gray-blue);
 }
 
@@ -436,40 +429,48 @@ video {
     flex-flow: wrap;
     flex-direction: row;
     justify-content: flex-start;
-    padding: 0 10px;
+    overflow: scroll;
 }
 
 #bottom .player-section {
-    display: flex;
     background: none;
     box-shadow: none;
-    border-bottom: 1px solid var(--light-gray-blue);
-    padding: 0 0 5px 0;
+    border-bottom: 3px solid var(--light-gray-blue);
+    border-right: 3px solid var(--light-gray-blue);
+    padding: 5px;
+    margin: 0;
+}
+
+#bottom .player0 {
+  border-left: 4px solid var(--light-gray-blue);
 }
 
 #bottom .list-of-wrestlers {
-    display: flex;
-    align-items: center;    
+    display: grid;
+    align-items: flex-start;  
+    grid-template-columns: 1fr;
 }
 
 #bottom .wrestler-card {
     width: auto;
     text-align: left;
-    margin: 0 0 0 5px;
+    margin: 0;
 }
 
 #bottom .player-section h2 {
     border-bottom: none;
     font-size: 20px;
     color: #fff;
+    text-align: left;
+    padding: 0;
 }
 
 
 #notification-container {
     overflow: scroll; 
     padding: 10px 5px 5px 5px;
-    max-height: 80vh;
     background: var(--default-gray-blue);
+    width: 19vw;
 }
 
 .notification {

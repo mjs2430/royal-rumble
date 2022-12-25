@@ -45,6 +45,7 @@ let deadCount = 0;
 let addWrestlerRunning = false;
 let removeWrestlerRunning = false;
 
+
     
 //Get player names from input field, split into an array
   $('#players').keyup(function() {
@@ -203,10 +204,12 @@ return showYear;
      $("#bottom").removeClass("hidden").addClass("show");
      $("#get-ready").addClass("playing");
      $("#notification-container").prepend(`<button id="next-wrestler" type="button">ADD NEW</button>`);
-    
-  setTimeout(function () {   
+     const htmlElement = document.querySelector('html');
+     htmlElement.style.overflow = 'hidden';
+     setTimeout(function () {   
      $("body").addClass("playing");
      $(".wrestler-card p").addClass("playing");
+    $(".extra-wrestlers").remove()
  }, 800); 
      
 // Define the DOM object to cut
@@ -221,19 +224,28 @@ const referenceElement = document.getElementById('bottom');
 // Paste the cut element after the reference element
 referenceElement.append(elementToCut);
 
-//add a comma to the wrestler list
+/*** add a comma to the wrestler list
 const commas = document.querySelectorAll('.wrestler-card:not(:last-child) p');
 commas.forEach(element => {
   element.innerHTML += ',';
-});
+}); **/
      
-//add a separator to the player name title
+/*add a separator to the player name title
 const hyphens = document.querySelectorAll('.player-grid h2');
 hyphens.forEach(element => {
   element.innerHTML += ' - ';
-});
+}); */
      
+//get height of bottom section and use it to size the top sections
+const topSection = document.querySelector('#top');
+const vid = document.querySelector('video');
+const notificationContainer = document.querySelector('#notification-container');
+const bottom = document.querySelector('#bottom');
 
+topSection.style.height = `calc(100vh - ${bottom.offsetHeight}px)`;
+vid.style.height = `calc(100vh - ${bottom.offsetHeight}px)`;
+notificationContainer.style.height = `calc(100vh - ${bottom.offsetHeight}px)`;
+ 
 	});    //end	
     
     
@@ -269,7 +281,7 @@ setTimeout(function () {
     CREATE_WRESTLER_GRID(); // run function that puts wrestlers in DOM   
 }, 500);    
 
- });
+ }); //end reshuffle
     
     
     
@@ -331,12 +343,17 @@ let wrestlerClass = wrestler.replace(/^[^A-Z]+|[\W]+/ig, "") //remove spaces and
     names = names.toString();
     names = names.replace(/,/g, ', ');
     names = names.replace(/-/g, '');
-    
- $(".inactive." + wrestlerClass).addClass("active");//change wrestler in grid to active colors
+    $(".inactive." + wrestlerClass).addClass("active");//change wrestler in grid to active colors
 
-     
-let notification = `<div class="notification noti-${wrestlerClass}"><h3><span>${wrestler}</span> entered the ring!</h3><h3 class="userName">Start drinking: <span>${names}</span></h3></div>`;//create a notification variable
-     $(notification).appendTo('#notification-container'); //append it to notification area of html
+    let notification; 
+// do not tell extra wrestlers user to drink
+    if (names == 'Extra Wrestlers') {
+         notification = `<div class="notification noti-${wrestlerClass}"><h3><span>${wrestler}</span> entered!</h3><h3 class="userName">Everyone take a sip!</h3></div>`;//create a notification variable
+    } else {
+        notification = `<div class="notification noti-${wrestlerClass}"><h3><span>${wrestler}</span> entered!</h3><h3 class="userName">Start drinking: <span>${names}</span></h3></div>`;//create a notification variable
+    } //end if statement
+    
+    $(notification).appendTo('#notification-container'); //append it to notification area of html
 	setTimeout(function(){ 
         $(".noti-" + wrestlerClass).addClass("reveal");
     }, 100); //after 100ms, slide-in
