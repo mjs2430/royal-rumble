@@ -92,11 +92,75 @@ let showYear = $('#year option:selected').text();
 let emby;
 
 switch (showYear) {
+  case '1988':
+    emby = 'http://66.10.240.172:8096/emby/Items/51979/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=f57410d4a6de6ac12791cd9af7cbbb63';
+    break;
+  case '1989':
+    emby = 'http://66.10.240.172:8096/emby/Items/53179/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=8c4ccc4616434c2a0cf4e68652d20e11';
+    break;
+  case '1990':
+    emby = 'http://66.10.240.172:8096/emby/Items/53180/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=3d384597ea2685162093ec878c842db3';
+    break;
+  case '1991':
+    emby = 'http://66.10.240.172:8096/emby/Items/53181/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=333a2df9e95638b96e0e353dd9ebbccd';
+    break;
+  case '1992':
+    emby = 'http://66.10.240.172:8096/emby/Items/51976/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=2adb70a732f4b63eda1ba61a2338f836';
+    break;
+//WE ARE HERE
+  case '1993':
+    emby = 'http://66.10.240.172:8096/emby/Items/53182/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=0d515eac6492066a981d01c45ccba2f8';
+    break;
+  case '1994':
+    emby = 'http://66.10.240.172:8096/emby/Items/53183/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=eb8128261658fcbe99ffecf4ac60e48c';
+    break;
+  case '1995':
+    emby = 'http://66.10.240.172:8096/emby/Items/53184/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=91ca9315f1b56fffd94652530a5573c1';
+    break;
+  case '1996':
+    emby = 'http://66.10.240.172:8096/emby/Items/53185/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=85690b4a4d19d12f71bdf901b035d768';
+    break;
+  case '1997':
+    emby = 'http://66.10.240.172:8096/emby/Items/51980/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=c7995858dabb94405a88da0b1559ffc8';
+    break;
+  case '1998':
+    emby = 'http://66.10.240.172:8096/emby/Items/53186/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=f0ae05efb146717dfe1a9321cc569b5a';
+    break;
+  case '1999':
+    emby = 'http://66.10.240.172:8096/emby/Items/53187/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=305b8a99f9f8402fd38bd282846b8368';
+    break;
+  case '2000':
+    emby = 'http://66.10.240.172:8096/emby/Items/51977/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=a61c633116b23ae6a97eda3f2ca835b0';
+    break;
   case '2001':
     emby = 'http://66.10.240.172:8096/emby/Items/51978/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=697d5b13c99a16d99050fdf8b78d3764';
     break;
-  case 'a':
-    emby = 'b';
+  case '2002':
+    emby = 'http://66.10.240.172:8096/emby/Items/51981/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=11fad60adead0f350a469e3776829816';
+    break;
+  case '2003':
+    emby = 'http://66.10.240.172:8096/emby/Items/51982/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=239802ced7c1de325846199c5365495c';
+    break;
+  case '2004':
+    emby = 'http://66.10.240.172:8096/emby/Items/51983/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=7adc297c364a3546fd68a590c551042e';
+    break;
+  case '2005':
+    emby = 'http://66.10.240.172:8096/emby/Items/51984/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=743b38c8f3639d137ab2699d75dc488d';
+    break;
+  case '2006':
+    emby = 'http://66.10.240.172:8096/emby/Items/51985/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=3bfd5a26f826a86ff3d0e0f34efd308e';
+    break;
+  case '2007':
+    emby = 'http://66.10.240.172:8096/emby/Items/53188/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=79dafaaab4336b24f71be1187fb8cbb1';
+    break;
+  case '2008':
+    emby = 'http://66.10.240.172:8096/emby/Items/53189/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=05a8b14d3d639e1b466021c9414cdcf4';
+    break;
+  case '2009':
+    emby = 'http://66.10.240.172:8096/emby/Items/53190/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=78d689c2716c80ae4ebf3f72a1ca21df';
+    break;
+  case '2010':
+    emby = 'http://66.10.240.172:8096/emby/Items/53191/Download?api_key=bd95d73a55bf434c93f38f64cbf28996&mediaSourceId=697f21661d331cada29e0b2c259761a2';
     break;
   default:
     emby = null;
