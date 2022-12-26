@@ -283,7 +283,7 @@ let video = document.querySelector('video');// Get the video element
 let timestamp = Math.round(video.currentTime);// Get the current timestamp of the video
 entryTimes.push(timestamp); // add the entryTime to the entryTimes array
 
-playAudio("http://matthewsasso.com/royalrumble/sounds/crowd.wav");
+playAudio("./sounds/bell.mp3");
 count++; //add to the count so we can use that integer to reference a position in the wrestler array
    
     
@@ -364,7 +364,7 @@ const found = array.find(number => number === videoTimestamp);
 
 //Remove wrestler if found
 if (found) {
-    
+    playAudio("./sounds/bell.mp3");
     deadCount++ //count each time a wrestler exits so we can do stuff when all wrestlers are out
     var index = array.indexOf(found);  // Get the index of the closest number in the array
 	wrestlerName = order[index];  //gets the wrestler name
