@@ -183,6 +183,18 @@ setTimeout(function () {
      $("#player-amount").addClass("hide");
      $("#wrestler-amount").addClass("hide");
      $("#wrestler-assignment").addClass("hide");
+     
+// remove any accidental extra wrestlers added to a player's list
+const elements = document.querySelectorAll('.list-of-wrestlers');
+for (const element of elements) {
+  const numChildren = element.childNodes.length;
+  if (numChildren > wrestlersPerPlayer) {
+    for (let i = wrestlersPerPlayer - 1; i < numChildren - 1; i++) {
+      element.childNodes[i].remove();
+    }
+  }
+}
+
  },1500);
 }); //end
     
@@ -483,24 +495,30 @@ const CREATE_WRESTLER_GRID = () => {
 		 } 
 	 } else { //if not enough wrestlers
 		 let  merged = [].concat.apply([], wrestlerNames); // merge our multidimensional array of wrestlers into one
-		 merged = merged.map((a) => [Math.random(),a]).sort((a,b) => a[0]-b[0]).map((a) => a[1]);	//shuffle that array
+         let doubled = merged.concat(merged);
+		 doubled = doubled.map((a) => [Math.random(),a]).sort((a,b) => a[0]-b[0]).map((a) => a[1]);	//shuffle that array
 		  let excessWrestlers = [];
-       
-            excessWrestlers = squash(merged, wrestlersPerPlayer);// remake multidimensional array function
-		    let startLoop = Math.ceil(30/wrestlersPerPlayer); // divide the total num of wrestlers by WPP, round up.
+         
+            excessWrestlers = squash(doubled, wrestlersPerPlayer);// remake multidimensional array function
+		    let startLoop = Math.floor(30/wrestlersPerPlayer); // divide the total num of wrestlers by WPP, round down.
 		    let stopLoop = numberOfPlayers - startLoop; //stop after number of players minus start. basically get how many iterations we need to do
  
 		 		//loop through our new array, stop after we finish adding wrestlers to the remaining players
 		 		 for (let x = 0; x <= excessWrestlers.length && x <= stopLoop; x++) {
 					 let z = x + startLoop; // get an integer based on the remaining players so we can assign them the proper class in css
+   
+            
 					 for (let y in excessWrestlers[x]) {
+
 						 let wrestlerClass = excessWrestlers[x][y].replace(/^[^A-Z]+|[\W]+/ig, "")
+                         // console.log(excessWrestlers);
+                         // console.log(excessWrestlers[x]);
+                         // console.log(excessWrestlers[x][y]);
 				 	     $(".player" + z +  " .list-of-wrestlers").append(`<div class='wrestler-card inactive ${wrestlerClass}'><p>${excessWrestlers[x][y]}</p></div>`);
 					 }
 		 }
 	 }
-    
-    
+     
 }//end
 	
 
