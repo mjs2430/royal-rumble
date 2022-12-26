@@ -167,9 +167,7 @@ return Promise.resolve();
     $("#loader").removeClass("show").addClass("hidden");
       
  // Use the name values from the sheet
-     setTimeout(function () {   
-  
-
+setTimeout(function () {   
     SHUFFLE(names); //run shuffle function, which includes function to create multidimensional array
     CREATE_WRESTLER_GRID(); // run function that puts wrestlers in DOM   
     $("#wrestler-assignment").removeClass("show").addClass("hidden");
@@ -179,6 +177,13 @@ return Promise.resolve();
     $("#start").addClass(showYear);
     return showYear;
      }, 800); 
+      
+ setTimeout(function () {
+     $("header").addClass("hide");
+     $("#player-amount").addClass("hide");
+     $("#wrestler-amount").addClass("hide");
+     $("#wrestler-assignment").addClass("hide");
+ },1500);
 }); //end
     
 
@@ -226,11 +231,11 @@ const vid = document.querySelector('video');
 const notificationContainer = document.querySelector('#notification-container');
 const bottom = document.querySelector('.player-section');
 
-topSection.style.height = `calc(100vh - ${bottom.offsetHeight}px  - 4px)`;
-vid.style.height = `calc(100vh - ${bottom.offsetHeight}px  - 4px)`;
-notificationContainer.style.height = `calc(100vh - ${bottom.offsetHeight}px) - 4px`;
+topSection.style.height = `calc(100vh - ${bottom.offsetHeight}px  - 20px)`;
+vid.style.height = `calc(100vh - ${bottom.offsetHeight}px  - 20px)`;
+notificationContainer.style.height = `calc(100vh - ${bottom.offsetHeight}px) - 20px`;
    });
-	});    //end	
+	});    //end	 
     
     
 //******* shufle wrestlers again if needed *****//
