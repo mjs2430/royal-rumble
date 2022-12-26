@@ -17,7 +17,7 @@ let entryTimes = [];
 let exitTimes = [];
 let timeInRing = [];
 let showYear = 0; 
-let deadCount = 29;
+let deadCount = 0;
 let addWrestlerRunning = false;
 let removeWrestlerRunning = false;
 
