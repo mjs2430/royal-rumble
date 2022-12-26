@@ -471,7 +471,7 @@ const CREATE_WRESTLER_GRID = () => {
 		 }
 	 };
 	  
-	//if not enough players 
+	//if too many wrestlers
 	 if (numberOfPlayers * wrestlersPerPlayer < 30) {
 		 for (let x = numberOfPlayers; x<=wrestlerNames.length; x++) {
 			 for (let y in wrestlerNames[x]) {		 
@@ -480,22 +480,22 @@ const CREATE_WRESTLER_GRID = () => {
 				 	$(".extra-wrestlers").removeClass('hidden');
 			 	$(".extra-wrestlers .list-of-wrestlers").append(`<div class='wrestler-card inactive ${wrestlerClass}'><p>${wrestlerNames[x][y]}</p></div>`);
 			 }
-		 }
-	 } else { //if too many players
-		 let  merged = [].concat.apply([], wrestlerNames); // merge our multidimensional array to one
+		 } 
+	 } else { //if not enough wrestlers
+		 let  merged = [].concat.apply([], wrestlerNames); // merge our multidimensional array of wrestlers into one
 		 merged = merged.map((a) => [Math.random(),a]).sort((a,b) => a[0]-b[0]).map((a) => a[1]);	//shuffle that array
 		  let excessWrestlers = [];
-
-       excessWrestlers = squash(merged, wrestlersPerPlayer);//call remerge array function
-		 
+       
+            excessWrestlers = squash(merged, wrestlersPerPlayer);// remake multidimensional array function
 		    let startLoop = Math.ceil(30/wrestlersPerPlayer); // divide the total num of wrestlers by WPP, round up.
 		    let stopLoop = numberOfPlayers - startLoop; //stop after number of players minus start. basically get how many iterations we need to do
+ 
 		 		//loop through our new array, stop after we finish adding wrestlers to the remaining players
 		 		 for (let x = 0; x <= excessWrestlers.length && x <= stopLoop; x++) {
 					 let z = x + startLoop; // get an integer based on the remaining players so we can assign them the proper class in css
 					 for (let y in excessWrestlers[x]) {
 						 let wrestlerClass = excessWrestlers[x][y].replace(/^[^A-Z]+|[\W]+/ig, "")
-				 	$(".player" + z +  " .list-of-wrestlers").append(`<div class='wrestler-card inactive ${wrestlerClass}'><p>${excessWrestlers[x][y]}</p></div>`);
+				 	     $(".player" + z +  " .list-of-wrestlers").append(`<div class='wrestler-card inactive ${wrestlerClass}'><p>${excessWrestlers[x][y]}</p></div>`);
 					 }
 		 }
 	 }
