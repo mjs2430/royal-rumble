@@ -22,7 +22,7 @@
 }
 
 html {
-    overflow: scroll
+    overflow: scroll;
 }
 ::-webkit-scrollbar {
   width: 0px;
@@ -118,6 +118,50 @@ input[type=button]:active {
 input[type=button]:focus {
   outline: none;
 }
+
+.broken-circle {
+  margin-top: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: darkorchid;
+  clip-path: polygon(50% 0%, 0% 50%, 0% 100%, 50% 100%, 100% 100%, 100% 50%, 100% 0%, 50% 0%);
+}
+
+
+/* define the animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* apply the animation to an element */
+.spinner {
+  /* other styles */
+  animation: spin 1s linear infinite;
+}
+
+
+#loader {
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#loader.hidden {
+    transition: all 500ms;
+    position: relative;
+}
+#loader.show {
+    transition: all 500ms;
+    position: relative;
+}
+
 header {
   background: url("img/steve-austin.gif"), linear-gradient( 181deg,  rgba(2,0,97,1) 15%, rgba(97,149,219,1) 158.5% );
 	background-size: contain;
@@ -254,7 +298,7 @@ main {
 
 .show {
   opacity: 1;
-  z-index: 9997;
+  z-index: 9999;
   transition: all 1s;
   transition-delay: 900ms;
   position: relative;
@@ -393,17 +437,13 @@ body.playing {
     background-color: cornflowerblue;
 }
 
-#get-ready .player-grid {
-    text-align: center;
-    display: flex;
-    flex-flow: wrap;
-    flex-direction: row;
-    justify-content: center; 
-}
+
 
 #top {
     display: flex;
     background-image: url(./img/bg/royalrumble.png);
+    background-size: 150%;  
+    background-position: center;
     position: sticky;
     top: 0;
     z-index: 9999;

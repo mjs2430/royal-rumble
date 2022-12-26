@@ -1,30 +1,6 @@
 $(document).ready(function() {
 
 
-/////***** Get data from Google Sheets *****////
-    
- // Replace YOUR_API_KEY with your actual API key
-const API_KEY = 'AIzaSyC-9cY7xA-_BsMvRieTFsO4thZp6jkkIKU';
-
-  // Replace SPREADSHEET_ID with the ID of the spreadsheet you want to import
-const SPREADSHEET_ID = '1NFjwvQqcK5Aa4NgC37nRg3Tp9TXdzy4tz03RwY_cuMQ';
-
-//******* Define a function to retrieve data from a specific sheet. sheetName is an argument to be passed in later when calling this function. I use it to call in the year and range to skip the first row, the header row ***///
-// Define a function to retrieve data from a specific sheet
-const getSheetData = async (sheetName, range) => {
-  // Build the API request URL to get the data from the sheet, skipping the first row
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${sheetName}!${range}?key=${API_KEY}`;
-
-  // Make the API request to get the data from the sheet
-  const response = await fetch(url);
-  const data = await response.json();
-    
-  // data.values is an array of rows, where each row is an array of cells
-  return data.values;
-    
-};
-
-
      
      
 //setup variables   
@@ -41,7 +17,7 @@ let entryTimes = [];
 let exitTimes = [];
 let timeInRing = [];
 let showYear = 0; 
-let deadCount = 0;
+let deadCount = 29;
 let addWrestlerRunning = false;
 let removeWrestlerRunning = false;
 
@@ -61,7 +37,7 @@ let removeWrestlerRunning = false;
 			 $(".player-grid").append(`<div class="player${x} player-section"><h2>${playerNames[x]}</h2><div class="list-of-wrestlers"></div><button class="addExtra">Add extra wrestler</button></div>`);
 	 }   
 	 //create extra player space
-	 $(".player-grid").append(`<div class="extra-wrestlers"><h2>Extra Wrestlers</h2><div class="list-of-wrestlers"></div></div>`);
+	 $(".player-grid").append(`<div class="extra-wrestlers hidden"><h2>Extra Wrestlers</h2><div class="list-of-wrestlers"></div></div>`);
 	  numberOfPlayers = playerNames.length;//set number of players integer
 	 	$("#names").val("");	//clear the names input field when done
     $("#player-amount").removeClass("show").addClass("hidden");
@@ -83,11 +59,20 @@ wrestlersPerPlayer = parseInt(wrestlers); //convert value string to integer
 $("#year").change(function () { 
 let showYear = $('#year option:selected').text();
 
- /**********  ****************************************************** 
-    WORKING HERE ON GETTING THE RIGHT URL
- ****************************************************************************** 
- ******************************************************
-******/
+//show loading icon while call is running
+$("#loader").removeClass("hidden").addClass("show");
+    
+// Call the google sheets function and pass in the selected year as the sheet name to get
+getSheetData(showYear,"A2:G31").then(rows => {
+ 
+// Loop through the rows in the sheet
+  for (const row of rows) {
+    // Add the wrestler's name from the row to the names array
+    names.push(row[1]);
+    order.push(row[1]);
+    timeInRing.push(row[4])
+  }     
+    
     
 // emby URL setting based on the year
 let emby;
@@ -166,34 +151,29 @@ switch (showYear) {
   default:
     emby = null;
 }
-
-// Call the google sheets function and pass in the selected year as the sheet name to get
-getSheetData(showYear,"A2:G31").then(rows => {
-  // Loop through the rows in the sheet
-  for (const row of rows) {
-    // Add the wrestler's name from the row to the names array
-    names.push(row[1]);
-    order.push(row[1]);
-    timeInRing.push(row[4])
-  }     
-    
 // Define the video element and the video source
 const video = document.querySelector('video');
 // Set the src attribute of the video element
 video.setAttribute('src', emby);
-}) 
+
+//Promise is used to make sure this is done running before we call it again to make sure the network call is done before we actually try to use the data
+return Promise.resolve();
+}); //done
       
+    
+//calling getSheetdata again in order to check to make sure if the first time we called it is finished, so then we can't do everything inside this function until the network call is done.  
+  getSheetData().then(() => {
+    
+    $("#loader").removeClass("show").addClass("hidden");
  // Use the name values from the sheet
-setTimeout(function () {
     SHUFFLE(names); //run shuffle function, which includes function to create multidimensional array
     CREATE_WRESTLER_GRID(); // run function that puts wrestlers in DOM   
-  $("#wrestler-assignment").removeClass("show").addClass("hidden");
+    $("#wrestler-assignment").removeClass("show").addClass("hidden");
     $("header").addClass("slideUp");
     $("#get-ready").removeClass("hidden").addClass("show");
     $("#start").html(`start the ${showYear} royal rumble`);
     $("#start").addClass(showYear);
-}, 500);    
-return showYear;
+    return showYear;
 }); //end
     
 
@@ -244,35 +224,15 @@ const bottom = document.querySelector('.player-section');
 topSection.style.height = `calc(100vh - ${bottom.offsetHeight}px  - 4px)`;
 vid.style.height = `calc(100vh - ${bottom.offsetHeight}px  - 4px)`;
 notificationContainer.style.height = `calc(100vh - ${bottom.offsetHeight}px) - 4px`;
- 
+   });
 	});    //end	
     
     
 //******* shufle wrestlers again if needed *****//
 $('#get-wrestlers').click(function() {
 
-// Clear the arrays
-order.splice(0, order.length);
-names.splice(0, names.length);
+// Clear the cards
 $(".wrestler-card").remove(); 
-    
-//get year from "start" button
-const element = document.querySelector('#start');
-const year = element.className;
-
-  
-
-// Call the google sheets function and pass in the selected year as the sheet name to get
-getSheetData(year,"A2:G31").then(rows => {
-  // Loop through the rows in the sheet
-  for (const row of rows) {
-    // Add the wrestler's name from the row to the names array
-    names.push(row[1]);
-    order.push(row[1]);
-    timeInRing.push(row[4])
-  }     
-    
-})     
 
  // reshuffle
 setTimeout(function () {
@@ -325,34 +285,38 @@ count++; //add to the count so we can use that integer to reference a position i
 // Add timeInRing for this wrestler to their entry timestamp to determine their exitTime, push to exitTimes array
 let exitTime = Number(timeInRing[count]) + timestamp;
 exitTimes.push(exitTime);
-console.log(exitTimes);
      
 let wrestler = order[count]; // wrestler name, array position
 let wrestlerClass = wrestler.replace(/^[^A-Z]+|[\W]+/ig, "") //remove spaces and special chars
 	
     let nl = document.querySelectorAll(".list-of-wrestlers > ." + wrestlerClass); // get nodelist
     let arr = [];
-    let names = [];
+    let playerNames = ["Extra Wrestlers"];
     for(let i = nl.length; i--; arr.unshift(nl[i])); // convert nodelist to array
     for (let x in arr) {
     let userName = $(arr[x]).parent().parent().find("h2").html();
-    names.push(userName);
+    playerNames.push(userName);
     }   
     
-    names = names.toString();
-    names = names.replace(/,/g, ', ');
-    names = names.replace(/-/g, '');
+    playerNames = playerNames.toString();
+    playerNames = playerNames.replace(/,/g, ', ');
+    playerNames = playerNames.replace(/-/g, '');
+    
     $(".inactive." + wrestlerClass).addClass("active");//change wrestler in grid to active colors
-
+  
+    
     let notification; 
+    
 // do not tell extra wrestlers user to drink
-    if (names == 'Extra Wrestlers') {
+    if (playerNames == 'Extra Wrestlers') {
          notification = `<div class="notification noti-${wrestlerClass}"><h3><span>${wrestler}</span> entered!</h3><h3 class="userName">Everyone take a sip!</h3></div>`;//create a notification variable
     } else {
-        notification = `<div class="notification noti-${wrestlerClass}"><h3><span>${wrestler}</span> entered!</h3><h3 class="userName">Start drinking: <span>${names}</span></h3></div>`;//create a notification variable
+        const realPlayerNames = playerNames.slice(17);
+        notification = `<div class="notification noti-${wrestlerClass}"><h3><span>${wrestler}</span> entered!</h3><h3 class="userName">Start drinking: <span>${realPlayerNames}</span></h3></div>`;//create a notification variable
     } //end if statement
     
     $(notification).appendTo('#notification-container'); //append it to notification area of html
+    
 	setTimeout(function(){ 
         $(".noti-" + wrestlerClass).addClass("reveal");
     }, 100); //after 100ms, slide-in
@@ -400,20 +364,18 @@ if (found) {
     var index = array.indexOf(found);  // Get the index of the closest number in the array
 	wrestlerName = order[index];  //gets the wrestler name
 	let wrestlerClass = wrestlerName.replace(/^[^A-Z]+|[\W]+/ig, "") //sets the wrestler class we are going to search for based on the name
-    console.log(wrestlerClass);
     let nl = document.querySelectorAll(".list-of-wrestlers > ." + wrestlerClass); // select the wrestler card from the list based on their CSS class
     let arr = [];
-    let names = [];
+    let playerNames = ["Extra Wrestlers"];
     for(let i = nl.length; i--; arr.unshift(nl[i])); // convert nodelist to array
     for (let x in arr) {
     let userName = $(arr[x]).parent().parent().find("h2").html(); // get player name who has this wrestler
-    names.push(userName); 
+    playerNames.push(userName); 
     }  
     
-    names = names.toString();
-    names = names.replace(/,/g, ', ');
-    names = names.replace(/-/g, ''); //remove hyphen from end of player's name
-    
+    playerNames = playerNames.toString();
+    playerNames = playerNames.replace(/,/g, ', ');
+    playerNames = playerNames.replace(/-/g, ''); //remove hyphen from end of player's name
     if (deadCount == 30) {
      console.log("entry times " + entryTimes);
      console.log("exit times " + exitTimes);
@@ -421,8 +383,16 @@ if (found) {
     
 $(".list-of-wrestlers ." + wrestlerClass).removeClass("active").addClass("dead");
     
-//Show wrestler is dead notification    
-    let notification = `<div class="notification red noti-${wrestlerClass}"><h3><span>${wrestlerName}</span> is dead!</h3><h3 class="userName">Finish drinking: <span>${names}</span></h3></div>`;//create a variable that is a fullscreen overlay
+    let notification; 
+    
+//Show wrestler is dead notification 
+     if (playerNames == 'Extra Wrestlers') {
+          notification = `<div class="notification red noti-${wrestlerClass}"><h3><span>${wrestlerName}</span> is dead!</h3><h3 class="userName">Everyone take a sip!</h3></div>`;
+     } else {
+        const realPlayerNames = playerNames.slice(17); 
+         notification = `<div class="notification red noti-${wrestlerClass}"><h3><span>${wrestlerName}</span> is dead!</h3><h3 class="userName">Finish drinking: <span>${realPlayerNames}</span></h3></div>`;//create a variable that is a fullscreen overlay
+     }
+    
      $(notification).appendTo('#notification-container'); //append it to main area of html
 	setTimeout(function(){ 
         $(".noti-" + wrestlerClass).addClass("reveal");
@@ -501,7 +471,7 @@ const CREATE_WRESTLER_GRID = () => {
 			 	$(".extra-wrestlers .list-of-wrestlers").append(`<div class='wrestler-card inactive ${wrestlerClass}'><p>${wrestlerNames[x][y]}</p></div>`);
 			 }
 		 }
-	 } else if (numberOfPlayers * wrestlersPerPlayer > 30){ //if too many players
+	 } else { //if too many players
 		 let  merged = [].concat.apply([], wrestlerNames); // merge our multidimensional array to one
 		 merged = merged.map((a) => [Math.random(),a]).sort((a,b) => a[0]-b[0]).map((a) => a[1]);	//shuffle that array
 		  let excessWrestlers = [];
@@ -525,7 +495,28 @@ const CREATE_WRESTLER_GRID = () => {
 	
 
 	
+/////***** Get data from Google Sheets *****////
+    
+ // Replace YOUR_API_KEY with your actual API key
+const API_KEY = 'AIzaSyC-9cY7xA-_BsMvRieTFsO4thZp6jkkIKU';
 
+  // Replace SPREADSHEET_ID with the ID of the spreadsheet you want to import
+const SPREADSHEET_ID = '1NFjwvQqcK5Aa4NgC37nRg3Tp9TXdzy4tz03RwY_cuMQ';
+
+//******* Define a function to retrieve data from a specific sheet. sheetName is an argument to be passed in later when calling this function. I use it to call in the year and range to skip the first row, the header row ***///
+// Define a function to retrieve data from a specific sheet
+const getSheetData = async (sheetName, range) => {
+  // Build the API request URL to get the data from the sheet, skipping the first row
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${sheetName}!${range}?key=${API_KEY}`;
+    
+  // Make the API request to get the data from the sheet
+  const response = await fetch(url);
+  const data = await response.json();
+    
+  // data.values is an array of rows, where each row is an array of cells
+  return data.values;
+    
+};
 
     
     
