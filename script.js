@@ -165,7 +165,11 @@ return Promise.resolve();
   getSheetData().then(() => {
     
     $("#loader").removeClass("show").addClass("hidden");
+      
  // Use the name values from the sheet
+     setTimeout(function () {   
+  
+
     SHUFFLE(names); //run shuffle function, which includes function to create multidimensional array
     CREATE_WRESTLER_GRID(); // run function that puts wrestlers in DOM   
     $("#wrestler-assignment").removeClass("show").addClass("hidden");
@@ -174,6 +178,7 @@ return Promise.resolve();
     $("#start").html(`start the ${showYear} royal rumble`);
     $("#start").addClass(showYear);
     return showYear;
+     }, 800); 
 }); //end
     
 
